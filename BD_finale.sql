@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `projetsession`;
+USE `projetsession`;
+
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: projetsession
