@@ -1,0 +1,36 @@
+.topfilms
+{
+}
+
+.titre
+{
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.moyenne
+{
+    display: inline-block;
+    position: relative;
+    float: right;
+    padding-right: 10px;
+}
+
+.synopsis
+{
+    padding: 0px 10px 0px 10px;
+}
+
+.film-card
+{
+    display: inline-block;
+    overflow: hidden;
+    height: 250px;
+    width: 19%;
+    border: 1px solid red;
+}
+
+.film-link
+{
+    color: inherit;
+}
