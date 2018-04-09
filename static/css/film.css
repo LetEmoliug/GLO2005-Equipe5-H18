@@ -1,0 +1,10 @@
+.info
+{
+    display: inline-block;
+    margin: 0 0 0.5em 0;
+}
+
+#synopsis
+{
+    max-width: 50%;
+}

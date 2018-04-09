@@ -1,0 +1,29 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/film.css') }}">
+</head>
+<body>
+  <div id="film-info">
+    <h1 id="titre">{{film.titre}}</h1></br>
+    <p id="date-sortie" class="info">Date de sortie : {{film.date}}</p></br>
+    <p id="duree" class="info">Durée : {{film.duree}}</p></br>
+    <p id="moyenne" class="info">Note moyenne des utilisateurs : {{film.note}}</p></br>
+    <p id="genre" class="info">Genre : {{film.genre}}</p></br>
+    <p id="synopsis" class="info">{{film.synopsis}}</p>
+  </div>
+  <div id="acteurs">
+    <p>Acteurs :</p>
+    {% for a in acteurs %}
+    <div class="acteur">
+      <p class="info"><a href="{{a.acteur_url}}">{{a.nom}}</a></p>
+    </div>
+    {% endfor %}
+  </div>
+  <div id="realisateurs">
+    <p>Réalisateurs :</p>
+    {% for r in realisateurs %}
+    <div class="realisateur">
+      <p class="info"><a href="{{r.realisateur_url}}">{{r.nom}}</a></p>
+    </div>
+    {% endfor %}
+  </div>
+</body>
