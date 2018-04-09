@@ -1,0 +1,10 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>GLO-2005 IMDb</h1>
+    {% for f in films %}
+    <p>{{f.titre}} {{f.moyenne}} {{f.synopsis}}</p>
+    {% endfor %}
+  </body>
+</html>
