@@ -8,3 +8,10 @@ Les templates HTML doivent êtres inclus dans `/templates` pour être interprét
 Les CSS doivent êtres inclus dans `/static/css` pour que Flask puissent les reconnaître.  
 
 De plus, il faudra inclure la ligne suivante dans le header du fichier HTML dans lequel vous souhaitez intégrer votre CSS `<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/nom_de_fichier.css') }}">`
+
+## Importer la database
+
+En ligne de commande UNIX, il suffit de taper la ligne de commande suivante, où `[root]` correspond à votre nom d'utilisateur :
+`mysql -u root -p < BD_finale.sql`.
+
+La base de données sera ensuite importée sous le nom `projetsession`.
