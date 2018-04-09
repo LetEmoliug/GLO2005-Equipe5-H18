@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 import pymysql
 import pymysql.cursors
 
@@ -36,6 +36,8 @@ def film_page(film_id):
         film_info['genre'] = Tuple[4]
         film_info['synopsis'] = Tuple[5]
 
+    if not bool(film_info):
+        abort(404)
     r2 = "SELECT jouer.id_acteur AS id_acteur, nom_acteur FROM jouer JOIN acteur ON jouer.id_acteur=acteur.id_acteur WHERE jouer.id_film=" + film_id + ";"
     cur.execute(r2)
     acteurs = []
