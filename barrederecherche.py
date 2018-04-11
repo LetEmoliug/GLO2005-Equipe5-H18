@@ -5,7 +5,7 @@ import pymysql.cursors
 conn = pymysql.connect(host='localhost', user="root", password="root", db="projetsession")
 app = Flask(__name__)
 
-Recherche = {}
+VarGlobal = {}
 
 @app.route("/")
 def main():
@@ -69,9 +69,8 @@ def user_page(user_id):
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
-    global Recherche
-    Recherche["recherche"] = request.form.get('recherche')
-    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE titre_film = recherche ORDER BY RAND() LIMIT 5;"
+    recherche = request.form.get('recherche')
+    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE titre_film LIKE '%" + recherche + "%';"
     cur = conn.cursor()
     cur.execute(requete)
 
