@@ -1,1 +1,29 @@
-<h1>{{username}}</h1>
+<html>
+  <head>
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user.css') }}">
+  </head>
+  <body>
+    <h1>GLO-2005 IMDb</h1>
+    <h2><a href="/">Home</a></h2>
+    <form action="/ResultatRecherche" method="post">
+        Recherche: <input type="text" name="recherche">
+        <input type="submit" value="Soumettre" name="enregistrement">
+    </form>
+    <div>
+        <h1 id="nom_usager">{{nom_usager}}</h1></br>
+    </div>
+    <div id="critiques">
+      <p>Critiques :</p>
+      {% for c in critiques %}
+      <div class="critique">
+        <h3> {{c.titre_critique}}</h3>
+        <p class="info"> Film : <a href="{{c.film_url}}">{{c.titre_film}}</a></p></br>
+        <p class="info"> {{c.date_ecriture}}</p></br>
+        <p class="info"> Note attribuée : {{c.note}}</p></br>
+        <p id="texte_critique" class="info">{{c.texte}}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
+

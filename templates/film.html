@@ -31,4 +31,16 @@
     </div>
     {% endfor %}
   </div>
+  <div id="critiques">
+    <p>Critiques :</p>
+    {% for c in critiques %}
+    <div class="critique">
+      <h3> {{c.titre_critique}}</h3>
+      <p class="info"> Par : <a href="{{c.nom_usager_url}}">{{c.nom_usager}}</a></p></br>
+      <p class="info">{{c.date_ecriture}}</p></br>
+      <p class="info"> Note attribuée : {{c.note}}</p></br>
+      <p id="texte_critique" class="info">{{c.texte}}</p>
+    </div>
+    {% endfor %}
+  </div>
 </body>
