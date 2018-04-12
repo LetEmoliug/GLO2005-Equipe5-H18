@@ -4,7 +4,10 @@
 <body>
   <div id="film-info">
     <h1>GLO-2005 IMDb</h1>
-    <input type="text">
+    <h2><a href="/">Home</a></h2>
+    <form action="/ResultatRecherche" method="post">
+        Recherche: <input type="text" name="recherche">
+        <input type="submit" value="Soumettre" name="enregistrement">
     <h1 id="titre">{{film.titre}}</h1></br>
     <p id="date-sortie" class="info">Date de sortie : {{film.date}}</p></br>
     <p id="duree" class="info">Durée : {{film.duree}}</p></br>

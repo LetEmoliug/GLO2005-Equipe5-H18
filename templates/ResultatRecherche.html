@@ -4,8 +4,9 @@
   </head>
   <body>
     <h1>GLO-2005 IMDb</h1>
-    <form action="ResultatRecherche" method="post">
-    Recherche: <input type="text" name="recherche">
+    <h2><a href="/">Home</a></h2>
+    <form action="/ResultatRecherche" method="post">
+        Recherche: <input type="text" name="recherche">
         <input type="submit" value="Soumettre" name="enregistrement">
     <div class="topfilms">
       {% for f in films %}
