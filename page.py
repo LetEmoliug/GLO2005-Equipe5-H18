@@ -105,7 +105,58 @@ def user_page(user_id):
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
     recherche = request.form.get('recherche')
-    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE titre_film LIKE '%" + recherche + "%';"
+    requete_films = "SELECT id_film, titre_film FROM film WHERE titre_film LIKE '%" + recherche + "%';"
+    cur = conn.cursor()
+    cur.execute(requete_films)
+
+    film = []
+    i = 0
+    for Tuple in cur:
+        film.append({})
+        film[i]['film_url'] = "/film/" + str(Tuple[0])
+        film[i]['titre'] = Tuple[1]
+        i += 1
+
+    requete_acteur = "SELECT id_acteur, nom_acteur FROM acteur WHERE nom_acteur LIKE '%" + recherche + "%';"
+    cur = conn.cursor()
+    cur.execute(requete_acteur)
+
+    acteur = []
+    i = 0
+    for Tuple in cur:
+        acteur.append({})
+        acteur[i]['acteur_url'] = "/acteur/" + str(Tuple[0])
+        acteur[i]['nom'] = Tuple[1]
+        i += 1
+
+    requete_realisateur = "SELECT id_realisateur, nom_realisateur FROM realisateur WHERE nom_realisateur LIKE '%" + recherche + "%';"
+    cur = conn.cursor()
+    cur.execute(requete_realisateur)
+
+    realisateur = []
+    i = 0
+    for Tuple in cur:
+        realisateur.append({})
+        realisateur[i]['realisateur_url'] = "/realisateur/" + str(Tuple[0])
+        realisateur[i]['nom'] = Tuple[1]
+        i += 1
+
+    requete_utilisateur = "SELECT nom_usager FROM utilisateur WHERE nom_usager LIKE '%" + recherche + "%';"
+    cur = conn.cursor()
+    cur.execute(requete_utilisateur)
+
+    utilisateur = []
+    i = 0
+    for Tuple in cur:
+        utilisateur.append({})
+        utilisateur[i]['utilisateur_url'] = "/utilisateur/" + str(Tuple[0])
+        utilisateur[i]['nom'] = Tuple[0]
+        i += 1
+    return render_template('ResultatRecherche.html', film=film, acteur=acteur, realisateur=realisateur, utilisateur=utilisateur)
+
+@app.route("/Films")
+def Films():
+    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -118,7 +169,8 @@ def ResultatsRecherche():
         films[i]['moyenne'] = Tuple[2]
         films[i]['synopsis'] = Tuple[3]
         i += 1
-    return render_template('ResultatRecherche.html', films=films)
+    #return render_template('ResultatRecherche.html', films=films)
+    return render_template('films.html', films=films)
 
 @app.route("/signup")
 def signup():
@@ -170,6 +222,68 @@ def logout():
     resp = make_response(redirect('/'))
     resp.set_cookie('token', '', expires=0)
     return resp
+
+@app.route("/acteur/<id_acteur>")
+def page_acteur(id_acteur):
+    #Requête info acteur.
+    req = "SELECT a.nom_acteur, DATE_FORMAT(a.date_naissance, '%D %M %Y'), a.pays_origine, a.sexe, a.biographie FROM acteur a WHERE a.id_acteur LIKE '" + id_acteur + "';"
+
+    cur = conn.cursor()
+    cur.execute(req)
+
+    info_acteur = {}
+    for Tuple in cur:
+        info_acteur['nom'] = Tuple[0]
+        info_acteur['date'] = Tuple[1]
+        info_acteur['pays_origine'] = Tuple[2]
+        info_acteur['sexe'] = Tuple[3]
+        info_acteur['biographie'] = Tuple[4]
+
+    #Requête titres des films ou l'acteur a participé.
+    req2 = "SELECT f.id_film, f.titre_film FROM film f JOIN jouer j ON f.id_film = j.id_film WHERE j.id_acteur=" + id_acteur + ";"
+    cur.execute(req2)
+
+    liste_filmes_joues = []
+    i = 0
+    for Tuple in cur:
+        liste_filmes_joues.append({})
+        liste_filmes_joues[i]['film_url'] = "/film/" + str(Tuple[0])
+        liste_filmes_joues[i]['titre'] = Tuple[1]
+        i += 1
+    cur.close()
+
+    return render_template('acteur.html', acteur = info_acteur, liste = liste_filmes_joues)
+
+@app.route("/realisateur/<id_realisateur>")
+def page_realisateur(id_realisateur):
+    #Requête info realisateur.
+    req = "SELECT a.nom_realisateur, DATE_FORMAT(a.date_naissance, '%D %M %Y'), a.pays_origine, a.sexe, a.biographie FROM realisateur a WHERE a.id_realisateur LIKE '" + id_realisateur + "';"
+
+    cur = conn.cursor()
+    cur.execute(req)
+
+    info_realisateur = {}
+    for Tuple in cur:
+        info_realisateur['nom'] = Tuple[0]
+        info_realisateur['date'] = Tuple[1]
+        info_realisateur['pays_origine'] = Tuple[2]
+        info_realisateur['sexe'] = Tuple[3]
+        info_realisateur['biographie'] = Tuple[4]
+
+    #Requête titres des films ou l'realisateur a participé.
+    req2 = "SELECT f.id_film, f.titre_film FROM film f JOIN creer j ON f.id_film = j.id_film WHERE j.id_realisateur=" + id_realisateur + ";"
+    cur.execute(req2)
+
+    liste_filmes_crees = []
+    i = 0
+    for Tuple in cur:
+        liste_filmes_crees.append({})
+        liste_filmes_crees[i]['film_url'] = "/film/" + str(Tuple[0])
+        liste_filmes_crees[i]['titre'] = Tuple[1]
+        i += 1
+    cur.close()
+
+    return render_template('realisateur.html', realisateur = info_realisateur, liste = liste_filmes_crees)
 
 if __name__ == "__main__":
     app.run()

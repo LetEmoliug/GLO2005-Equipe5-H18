@@ -1,4 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Realisateur</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/header.css') }}">
 </head>
 <body>
@@ -21,12 +25,18 @@
     <a href="/logout">Se déconnecter</a>
     {% endif %}
   </div>
-  <div class="signup form">
-    <h2>Créer un compte GLO-2005 IMDb</h2>
-    <form action="{{ url_for('checksignup') }}" method="post">
-      <span>Username :</span><input type="text" name="username"></input><br/>
-      <span>Password :</span><input type="password" name="password"></input><br/>
-      <input type="submit" value="Créer un compte">
-    </form>
+  <div id="realisateur-info">
+    <h1 id="nom_realisateur">{{realisateur.nom}}</h1></br>
+    <p id="date_naissance" class="info">Date de naissance : {{realisateur.date}}</p></br>
+    <p id="pays_origine" class="info">Pays d'origine : {{realisateur.pays_origine}}</p></br>
+    <p id="sexe" class="info">Sexe : {{realisateur.sexe}}</p></br>
+    <p id="biographie" class="info">Biographie : {{realisateur.biographie}}</p></br>
+  </div>
+  <div id="liste">
+    <p>Liste de films:</p>
+    {% for f in liste %}
+    <p id="titre_film" class="liste"><a href="{{f.film_url}}">{{f.titre}}</a></p>
+    {% endfor %}
   </div>
 </body>
+</html>

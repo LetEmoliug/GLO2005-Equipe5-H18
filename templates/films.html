@@ -10,8 +10,8 @@
 	<h2><a href="/">Acceuil</a> <a href="/Films">Films</a> <a href="/">Acteurs</a></h2>
       </div>
       <form id="recherche" action="/ResultatRecherche" method="post">
-        <span>Recherche:</span><input type="text" name="recherche">
-        <input type="submit" value="Rechercher" name="enregistrement">
+	<span>Recherche:</span><input type="text" name="recherche">
+	<input type="submit" value="Rechercher" name="enregistrement">
       </form>
     </div>
     <div id="user">
@@ -25,11 +25,7 @@
     </div>
     <div class="topfilms">
       {% for f in films %}
-	 <div class="film-card">
-	   <p class="titre"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
-	   <p class="moyenne">{{f.moyenne}}</p>
-	   <p class="synopsis">{{f.synopsis}}</p>
-	 </div>
+      <p class="titre"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p><br>
       {% endfor %}
     </div>
   </body>
