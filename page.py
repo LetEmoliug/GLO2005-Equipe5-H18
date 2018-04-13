@@ -149,7 +149,7 @@ def ResultatsRecherche():
     i = 0
     for Tuple in cur:
         utilisateur.append({})
-        utilisateur[i]['utilisateur_url'] = "/utilisateur/" + str(Tuple[0])
+        utilisateur[i]['utilisateur_url'] = "/user/" + str(Tuple[0])
         utilisateur[i]['nom'] = Tuple[0]
         i += 1
     return render_template('ResultatRecherche.html', film=film, acteur=acteur, realisateur=realisateur, utilisateur=utilisateur)
