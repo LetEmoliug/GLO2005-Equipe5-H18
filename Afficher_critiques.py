@@ -22,7 +22,7 @@ def main():
         films[i]['moyenne'] = Tuple[2]
         films[i]['synopsis'] = Tuple[3]
         i += 1
-    return render_template('barrederecherche.html', films=films)
+    return render_template('index.html', films=films)
 
 @app.route("/film/<film_id>")
 def film_page(film_id):
@@ -114,7 +114,7 @@ def ResultatsRecherche():
         films[i]['moyenne'] = Tuple[2]
         films[i]['synopsis'] = Tuple[3]
         i += 1
-    return render_template('barrederecherche.html', films=films)
+    return render_template('ResultatRecherche.html', films=films)
 
 
 

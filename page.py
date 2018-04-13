@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, request
 import pymysql
 import pymysql.cursors
 
@@ -64,6 +64,24 @@ def film_page(film_id):
 @app.route("/user/<user_id>")
 def user_page(user_id):
     return render_template('user.html', username=user_id)
+
+@app.route("/ResultatRecherche", methods=['POST'])
+def ResultatsRecherche():
+    recherche = request.form.get('recherche')
+    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE titre_film LIKE '%" + recherche + "%';"
+    cur = conn.cursor()
+    cur.execute(requete)
+
+    films = []
+    i = 0
+    for Tuple in cur:
+        films.append({})
+        films[i]['film_url'] = "/film/" + str(Tuple[0])
+        films[i]['titre'] = Tuple[1]
+        films[i]['moyenne'] = Tuple[2]
+        films[i]['synopsis'] = Tuple[3]
+        i += 1
+    return render_template('ResultatRecherche.html', films=films)
 
 
 if __name__ == "__main__":
