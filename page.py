@@ -1,16 +1,22 @@
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, abort, request, redirect, make_response
 import pymysql
 import pymysql.cursors
+import hashlib
 
 conn = pymysql.connect(host='localhost', user="root", password="root", db="projetsession")
 app = Flask(__name__)
 
+VarGlobal = {}
+
+def getUserToken():
+    return request.cookies.get('token')
+
 @app.route("/")
 def main():
+    token = getUserToken()
     requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE note_moyenne > 7.5 ORDER BY RAND() LIMIT 5;"
     cur = conn.cursor()
     cur.execute(requete)
-
     films = []
     i = 0
     for Tuple in cur:
@@ -20,7 +26,7 @@ def main():
         films[i]['moyenne'] = Tuple[2]
         films[i]['synopsis'] = Tuple[3]
         i += 1
-    return render_template('index.html', films=films)
+    return render_template('index.html', films=films, token=token)
 
 @app.route("/film/<film_id>")
 def film_page(film_id):
@@ -57,13 +63,44 @@ def film_page(film_id):
         realisateurs[i]['realisateur_url'] = "/realisateur/" + str(Tuple[0])
         realisateurs[i]['nom'] = Tuple[1]
         i += 1
+
+    r4 = "select nom_usager, titre_critique, DATE_FORMAT(date_ecriture, '%D %M %Y'), texte, note from critique where id_film =" + film_id + ";"
+    cur.execute(r4)
+    critiques = []
+    i = 0
+    for Tuple in cur:
+        critiques.append({})
+        critiques[i]['nom_usager'] = Tuple[0]
+        critiques[i]['titre_critique'] = Tuple[1]
+        critiques[i]['date_ecriture'] = Tuple[2]
+        critiques[i]['texte'] = Tuple[3]
+        critiques[i]['note'] = Tuple[4]
+        critiques[i]['nom_usager_url'] = "/user/" + str(Tuple[0])
+        i += 1
     cur.close()
 
-    return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs)
+    return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques)
 
 @app.route("/user/<user_id>")
 def user_page(user_id):
-    return render_template('user.html', username=user_id)
+    cur = conn.cursor()
+
+    requete1 = "select f.titre_film, c.titre_critique, c.date_ecriture, c.texte, c.note, id_film from critique as c inner join film as f using(id_film) where nom_usager ='" + user_id + "';"
+    cur.execute(requete1)
+    critiques = []
+    i = 0
+    for Tuple in cur:
+        critiques.append({})
+        critiques[i]['titre_film'] = Tuple[0]
+        critiques[i]['titre_critique'] = Tuple[1]
+        critiques[i]['date_ecriture'] = Tuple[2]
+        critiques[i]['texte'] = Tuple[3]
+        critiques[i]['note'] = Tuple[4]
+        critiques[i]['film_url'] = "/film/" + str(Tuple[5])
+        i += 1
+
+    cur.close()
+    return render_template('user.html', nom_usager=user_id, critiques=critiques)
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
@@ -83,6 +120,56 @@ def ResultatsRecherche():
         i += 1
     return render_template('ResultatRecherche.html', films=films)
 
+@app.route("/signup")
+def signup():
+    return render_template('signup.html')
+
+@app.route("/checksignup", methods=['POST'])
+def checksignup():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if username == password:
+        return redirect('/signup')
+    r = "SELECT COUNT(nom_usager) FROM utilisateur WHERE nom_usager LIKE '" + username + "';"
+    cur = conn.cursor()
+    cur.execute(r)
+    for Tuple in cur:
+        if Tuple[0] == 1:
+            return redirect('/signup')
+    insert = "INSERT INTO utilisateur VALUES('" + username + "', DATE(NOW()), SHA2('" + password + "', 256));"
+    cur.execute(insert)
+    conn.commit()
+    #username = hashlib.sha256(bytes(username), encoding='utf-8').hexdigest()
+    resp = make_response(redirect('/'))
+    resp.set_cookie('token', username)
+    return resp
+
+@app.route("/login")
+def login():
+    return render_template('login.html')
+
+@app.route("/checklogin", methods=['POST'])
+def checklogin():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    r = "SELECT COUNT(nom_usager) FROM utilisateur WHERE nom_usager LIKE '" + username + "' AND mot_de_passe LIKE SHA2('" + password + "', 256);"
+    cur = conn.cursor()
+    cur.execute(r)
+
+    for Tuple in cur:
+        if Tuple[0] == 0:
+            return redirect('/login')
+    #username = hashlib.sha256(bytes(username, encoding='utf-8')).hexdigest()
+    resp = make_response(redirect('/'))
+    resp.set_cookie('token', username)
+    return resp
+
+@app.route("/logout")
+def logout():
+    resp = make_response(redirect('/'))
+    resp.set_cookie('token', '', expires=0)
+    return resp
 
 if __name__ == "__main__":
     app.run()

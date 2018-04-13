@@ -1,0 +1,10 @@
+<h1>GLO-2005 IMDb</h1>
+<h2><a href="/">Acceuil</a> <a href="/">Films</a> <a href="/">Acteurs</a></h2>
+<div class="signup form">
+  <h2>Se connecter à GLO-2005 IMDb</h2>
+  <form action="{{ url_for('checklogin') }}" method="post">
+    <span>Username :</span><input type="text" name="username"></input><br/>
+    <span>Password :</span><input type="password" name="password"></input><br/>
+    <input type="submit" value="Se connecter">
+  </form>
+</div>

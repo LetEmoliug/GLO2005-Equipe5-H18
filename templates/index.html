@@ -3,11 +3,25 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
   </head>
   <body>
-    <h1>GLO-2005 IMDb</h1>
-    <h2><a href="/">Acceuil</a> <a href="/">Films</a> <a href="/">Acteurs</a></h2>
-    <form action="/ResultatRecherche" method="post">
-        Recherche: <input type="text" name="recherche">
-        <input type="submit" value="Soumettre" name="enregistrement">
+    <div id="header">
+      <h1>GLO-2005 IMDb</h1>
+      <div id="categories">
+	<h2><a href="/">Acceuil</a> <a href="/">Films</a> <a href="/">Acteurs</a></h2>
+      </div>
+      <form id="recherche" action="/ResultatRecherche" method="post">
+        <span>Recherche:</span><input type="text" name="recherche">
+        <input type="submit" value="Rechercher" name="enregistrement">
+      </form>
+    </div>
+    <div id="user">
+      {% if not token %}
+      <a href="/login">Se connecter</a>
+      <a href="/signup">Créer un compte</a>
+      {% else %}
+      <span>{{ token }}</span>
+      <a href="/logout">Se déconnecter</a>
+      {% endif %}
+    </div>
     <div class="topfilms">
       {% for f in films %}
 	 <div class="film-card">

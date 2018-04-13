@@ -34,3 +34,27 @@
 {
     color: inherit;
 }
+
+#header
+{
+    display: inline-block;
+    width: 79%;
+}
+
+#categories
+{
+    display: inline-block;
+    padding-right: 12%;
+}
+
+#recherche
+{
+    display: inline-block;
+}
+
+#user
+{
+    width: 20%;
+    display: inline-block;
+    text-align: right;
+}
