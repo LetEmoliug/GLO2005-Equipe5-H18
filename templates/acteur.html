@@ -13,8 +13,13 @@
     <p id="biographie" class="info">Biographie : {{acteur.biographie}}</p></br>
   </div>
  <div id="liste">
-     <p>Liste de films:</p>
-     <p id="titre_film" class="liste"> {{liste}}</p>
+     <h1 id="titre">Liste films</h1></br>
+     {% for t in liste %}
+     <div class="liste">
+         <p id="titre_film" class="liste">{{t.film}}</p>
+         <p class="liste"> Film : <a href="{{t.film_url}}">{{t.film}}</a></p></br>
+     </div>
+     {% endfor %}
  </div>
 </body>
 </html>
