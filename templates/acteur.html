@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
- <head>
-     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user.css') }}">
- </head>
- <body>
-  <h1>GLO-2005 IMDb</h1>
-  <h2><a href="/">Home</a></h2>
-      <form action="/ResultatRecherche" method="post">
-          Recherche: <input type="text" name="recherche">
-          <input type="submit" value="Soumettre" name="enregistrement">
-      </form>
-  <div id="acteur-info">
-      <h1 id="nom_acteur">{{acteur.nom}}</h1></br>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Acteur</title>
+</head>
+<body>
+ <div id="acteur-info">
+    <h1 id="nom_acteur">{{acteur.nom}}</h1></br>
     <p id="date_naissance" class="info">Date de naissance : {{acteur.date}}</p></br>
     <p id="pays_origine" class="info">Pays d'origine : {{acteur.pays_origine}}</p></br>
     <p id="sexe" class="info">Sexe : {{acteur.sexe}}</p></br>
     <p id="biographie" class="info">Biographie : {{acteur.biographie}}</p></br>
   </div>
- </body>
+ <div id="liste">
+     <p>Liste de films:</p>
+     <p id="titre_film" class="liste"> {{liste}}</p>
+ </div>
+</body>
 </html>
