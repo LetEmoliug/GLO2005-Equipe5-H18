@@ -132,7 +132,7 @@ def user_page(user_id):
     token = getUserToken()
     cur = conn.cursor()
 
-    req1 = "select DATE_FORMAT(date_creation, '%D %M %Y') from utilisateur where nom_usager = " + user_id + ";"
+    req1 = "select DATE_FORMAT(date_creation, '%D %M %Y') from utilisateur where nom_usager = '" + user_id + "';"
     cur.execute(req1)
 
     liste_dates_creation = []
@@ -142,18 +142,18 @@ def user_page(user_id):
         liste_dates_creation[i]['date'] = Tuple[0]
         i += 1
 
-    req2 = "select f.titre_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = " + user_id + ";"
-    cur.exsecute(req2)
+    req2 = "select f.titre_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = '" + user_id + "';"
+    cur.execute(req2)
 
     liste_filmes_favoris = []
     i = 0
     for Tuple in cur:
         liste_filmes_favoris.append({})
         liste_filmes_favoris[i]['film_url'] = "/film/" + str(Tuple[0])
-        liste_filmes_favoris[i]['titre'] = Tuple[1]
+        liste_filmes_favoris[i]['titre'] = Tuple[0]
         i += 1
 
-    req3 = "select usager_qui_suit from suivre where usager_suivi = " + user_id + ";"
+    req3 = "select usager_qui_suit from suivre where usager_suivi = '" + user_id + "';"
     cur.execute(req3)
 
     liste_users_qui_suivent = []
@@ -164,7 +164,7 @@ def user_page(user_id):
         liste_users_qui_suivent[i]['username'] = Tuple[0]
         i += 1
 
-    req4 = "select usager_suivit from suivre where usager_qui_suit = " + user_id + ";"
+    req4 = "select usager_suivi from suivre where usager_qui_suit = '" + user_id + "';"
     cur.execute(req4)
 
     liste_users_suivit = []
