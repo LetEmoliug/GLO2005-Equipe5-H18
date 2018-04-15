@@ -132,6 +132,43 @@ def user_page(user_id):
     token = getUserToken()
     cur = conn.cursor()
 
+    req1 = "select u.date_creation from utilisateur u where user_id = " + user_id + ";"
+    cur.execute(req1)
+    date_creation = cur
+
+    req2 = "select f.titre_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = " + user_id + ";"
+    cur.exsecute(req2)
+
+    liste_filmes_favoris = []
+    i = 0
+    for Tuple in cur:
+        liste_filmes_favoris.append({})
+        liste_filmes_favoris[i]['film_url'] = "/film/" + str(Tuple[0])
+        liste_filmes_favoris[i]['titre'] = Tuple[1]
+        i += 1
+
+    req3 = "select usager_qui_suit from suivre where usager_suivi = " + user_id + ";"
+    cur.execute(req3)
+
+    liste_users_qui_suivent = []
+    i = 0
+    for Tuple in cur:
+        liste_users_qui_suivent.append({})
+        liste_users_qui_suivent[i]['user_url'] = "/user/" + str(Tuple[0])
+        liste_users_qui_suivent[i]['username'] = Tuple[0]
+        i += 1
+
+    req4 = "select usager_suivit from suivre where usager_qui_suit = " + user_id + ";"
+    cur.execute(req4)
+
+    liste_users_suivit = []
+    i = 0
+    for Tuple in cur:
+        liste_users_suivit.append({})
+        liste_users_suivit[i]['user_url'] = "/user/" + str(Tuple[0])
+        liste_users_suivit[i]['username'] = Tuple[0]
+        i += 1
+
     requete1 = "select f.titre_film, c.titre_critique, c.date_ecriture, c.texte, c.note, id_film from critique as c inner join film as f using(id_film) where nom_usager ='" + user_id + "';"
     cur.execute(requete1)
     critiques = []
@@ -147,7 +184,7 @@ def user_page(user_id):
         i += 1
 
     cur.close()
-    return render_template('user.html', nom_usager=user_id, critiques=critiques, token=token)
+    return render_template('user.html', liste= liste_filmes_favoris, date = date_creation, suivit = liste_users_qui_suivent, suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token)
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
