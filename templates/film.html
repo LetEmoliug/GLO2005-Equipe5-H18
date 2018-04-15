@@ -47,14 +47,87 @@
     {% endfor %}
   </div>
   <div id="critiques">
+    {% if token and token not in usagers %}
+    <p>Écrivez une critique publique :</p>
+    <form id="formEcrireCritique" method="post">
+      Titre de la critique : <input type="text" name="titre_crit">
+      </br>
+      Sélectionnez une note de 0 à 10 : </br>
+       &nbsp&nbsp0 &nbsp&nbsp 1 &nbsp&nbsp 2 &nbsp&nbsp 3 &nbsp&nbsp 4 &nbsp&nbsp 5
+      &nbsp&nbsp 6 &nbsp&nbsp 7 &nbsp&nbsp 8 &nbsp&nbsp 9 &nbsp&nbsp 10 </br>
+      <input checked type="radio" name="note" value="0">
+      <input type="radio" name="note" value="1">
+      <input type="radio" name="note" value="2">
+      <input type="radio" name="note" value="3">
+      <input type="radio" name="note" value="4">
+      <input type="radio" name="note" value="5">
+      <input type="radio" name="note" value="6">
+      <input type="radio" name="note" value="7">
+      <input type="radio" name="note" value="8">
+      <input type="radio" name="note" value="9">
+      <input type="radio" name="note" value="10">
+    </form>
+    <textarea rows="4" cols="50" form="formEcrireCritique" name="texte"
+              placeholder="Entrez le texte de la critique ici..."></textarea></br>
+    <button form="formEcrireCritique" type="submit">Soumettre la critique</button>
+    {% endif %}
+    {% if modification %}
+    <p>Modifier votre critique :</p>
+    <form id="formModifCritique" method="post">
+      Titre de la critique : <input type="text" name="titre_crit_modif" value="{{usager_courant.titre_critique}}">
+      </br>
+      Sélectionnez une note de 0 à 10 : </br>
+       &nbsp&nbsp0 &nbsp&nbsp 1 &nbsp&nbsp 2 &nbsp&nbsp 3 &nbsp&nbsp 4 &nbsp&nbsp 5
+      &nbsp&nbsp 6 &nbsp&nbsp 7 &nbsp&nbsp 8 &nbsp&nbsp 9 &nbsp&nbsp 10 </br>
+      <input type="radio" name="note_modif" value="0">
+      <input type="radio" name="note_modif" value="1">
+      <input type="radio" name="note_modif" value="2">
+      <input type="radio" name="note_modif" value="3">
+      <input type="radio" name="note_modif" value="4">
+      <input type="radio" name="note_modif" value="5">
+      <input type="radio" name="note_modif" value="6">
+      <input type="radio" name="note_modif" value="7">
+      <input type="radio" name="note_modif" value="8">
+      <input type="radio" name="note_modif" value="9">
+      <input type="radio" name="note_modif" value="10">
+      <script>
+        for (i = 0; i <= 10; i++) {
+          if ((document.getElementsByName("note_modif")[i].value).concat(".0") === "{{usager_courant.note}}"){
+	        document.getElementsByName("note_modif")[i].checked = true;
+          }
+        }
+      </script>
+    </form>
+    <textarea rows="4" cols="50" form="formModifCritique" name="texte_modif">
+      {{usager_courant.texte}}
+    </textarea></br>
+    <button form="formModifCritique" type="submit">Modifier la critique</button>
+    {% endif %}
     <p>Critiques :</p>
     {% for c in critiques %}
-    <div class="critique">
+    <div class="critique_user">
+      {% if token and token == c.nom_usager %}
+      <h3> {{c.titre_critique}}</h3>
+      <p>Ceci est votre critique</p>
+      <form method="post">
+        <input type="submit" name="update_button" value="Éditer">
+        <input type="submit" name="delete_button" value="Supprimer">
+      </form>
+      <p class="info">{{c.date_ecriture}}</p></br>
+      <p class="info"> Note attribuée : {{c.note}}</p></br>
+      <p id="texte_critique_user" class="info">{{c.texte}}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% for c in critiques %}
+    <div class="autres_critique">
+      {% if token != c.nom_usager %}
       <h3> {{c.titre_critique}}</h3>
       <p class="info"> Par : <a href="{{c.nom_usager_url}}">{{c.nom_usager}}</a></p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
       <p class="info"> Note attribuée : {{c.note}}</p></br>
       <p id="texte_critique" class="info">{{c.texte}}</p>
+      {% endif %}
     </div>
     {% endfor %}
   </div>

@@ -3,7 +3,7 @@ import pymysql
 import pymysql.cursors
 import hashlib
 
-conn = pymysql.connect(host='localhost', user="root", password="root", db="projetsession")
+conn = pymysql.connect(host='localhost', user="root", password="Kappa", db="tpbd")
 app = Flask(__name__)
 
 VarGlobal = {}
@@ -28,10 +28,45 @@ def main():
         i += 1
     return render_template('index.html', films=films, token=token)
 
-@app.route("/film/<film_id>")
+@app.route("/film/<film_id>", methods=['GET', 'POST'])
 def film_page(film_id):
-    r1 = "SELECT titre_film, DATE_FORMAT(date_parution, '%D %M %Y'), duree, note_moyenne, genre, synopsis FROM film WHERE id_film=" + film_id + ";"
+    token = getUserToken()
+    titre_crit = request.form.get("titre_crit")
+    note = request.form.get('note')
+    texte = request.form.get("texte")
+    modification = request.form.get("update_button")
+    suppression = request.form.get("delete_button")
+    titre_crit_modif = request.form.get("titre_crit_modif")
+    note_modif = request.form.get('note_modif')
+    texte_modif = request.form.get("texte_modif")
+
     cur = conn.cursor()
+
+    if suppression:
+        delete_crit = "delete from critique where nom_usager = '" + token + "' and id_film = " + film_id + ";"
+        cur.execute(delete_crit)
+        conn.commit()
+
+        auto_inc = "select max(id_critique)from critique;"
+        cur.execute(auto_inc)
+        for Tuple in cur:
+            inc_value = str(Tuple[0])
+
+        update_auto_increment = "alter table critique AUTO_INCREMENT = " + inc_value + ";"
+        cur.execute(update_auto_increment)
+        conn.commit()
+
+    if titre_crit_modif and note_modif and texte_modif:
+        req_update = "update critique set texte='"+texte_modif+"', note="+note_modif+", titre_critique='"+titre_crit_modif+"' where nom_usager='"+token+"' and id_film="+film_id+";"
+        cur.execute(req_update)
+        conn.commit()
+
+    if titre_crit and note and texte:
+        insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
+        cur.execute(insertion)
+        conn.commit()
+
+    r1 = "SELECT titre_film, DATE_FORMAT(date_parution, '%D %M %Y'), duree, note_moyenne, genre, synopsis FROM film WHERE id_film=" + film_id + ";"
     cur.execute(r1)
     film_info = {}
     for Tuple in cur:
@@ -67,6 +102,8 @@ def film_page(film_id):
     r4 = "select nom_usager, titre_critique, DATE_FORMAT(date_ecriture, '%D %M %Y'), texte, note from critique where id_film =" + film_id + ";"
     cur.execute(r4)
     critiques = []
+    usagers = []
+    usager_courant = {}
     i = 0
     for Tuple in cur:
         critiques.append({})
@@ -76,13 +113,23 @@ def film_page(film_id):
         critiques[i]['texte'] = Tuple[3]
         critiques[i]['note'] = Tuple[4]
         critiques[i]['nom_usager_url'] = "/user/" + str(Tuple[0])
+
+        usagers.append(Tuple[0]) #liste d'usagers qui ont critiqué le film
+
+        if Tuple[0] == token:
+            usager_courant['titre_critique'] = Tuple[1]
+            usager_courant['texte'] = Tuple[3]
+            usager_courant['note'] = Tuple[4]
+
         i += 1
     cur.close()
 
-    return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques)
+    return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques,
+                           token=token, usagers=usagers, modification=modification, usager_courant=usager_courant)
 
 @app.route("/user/<user_id>")
 def user_page(user_id):
+    token = getUserToken()
     cur = conn.cursor()
 
     requete1 = "select f.titre_film, c.titre_critique, c.date_ecriture, c.texte, c.note, id_film from critique as c inner join film as f using(id_film) where nom_usager ='" + user_id + "';"
@@ -100,10 +147,12 @@ def user_page(user_id):
         i += 1
 
     cur.close()
-    return render_template('user.html', nom_usager=user_id, critiques=critiques)
+    return render_template('user.html', nom_usager=user_id, critiques=critiques, token=token)
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
+    token = getUserToken()
+
     recherche = request.form.get('recherche')
     requete_films = "SELECT id_film, titre_film FROM film WHERE titre_film LIKE '%" + recherche + "%';"
     cur = conn.cursor()
@@ -152,10 +201,11 @@ def ResultatsRecherche():
         utilisateur[i]['utilisateur_url'] = "/user/" + str(Tuple[0])
         utilisateur[i]['nom'] = Tuple[0]
         i += 1
-    return render_template('ResultatRecherche.html', film=film, acteur=acteur, realisateur=realisateur, utilisateur=utilisateur)
+    return render_template('ResultatRecherche.html', film=film, acteur=acteur, realisateur=realisateur, utilisateur=utilisateur, token=token)
 
 @app.route("/Films")
 def Films():
+    token = getUserToken()
     requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
@@ -170,11 +220,12 @@ def Films():
         films[i]['synopsis'] = Tuple[3]
         i += 1
     #return render_template('ResultatRecherche.html', films=films)
-    return render_template('films.html', films=films)
+    return render_template('films.html', films=films, token=token)
 
 @app.route("/signup")
 def signup():
-    return render_template('signup.html')
+    token = getUserToken()
+    return render_template('signup.html', token=token)
 
 @app.route("/checksignup", methods=['POST'])
 def checksignup():
@@ -198,7 +249,8 @@ def checksignup():
 
 @app.route("/login")
 def login():
-    return render_template('login.html')
+    token = getUserToken()
+    return render_template('login.html', token=token)
 
 @app.route("/checklogin", methods=['POST'])
 def checklogin():
@@ -225,6 +277,7 @@ def logout():
 
 @app.route("/acteur/<id_acteur>")
 def page_acteur(id_acteur):
+    token = getUserToken()
     #Requête info acteur.
     req = "SELECT a.nom_acteur, DATE_FORMAT(a.date_naissance, '%D %M %Y'), a.pays_origine, a.sexe, a.biographie FROM acteur a WHERE a.id_acteur LIKE '" + id_acteur + "';"
 
@@ -252,10 +305,11 @@ def page_acteur(id_acteur):
         i += 1
     cur.close()
 
-    return render_template('acteur.html', acteur = info_acteur, liste = liste_filmes_joues)
+    return render_template('acteur.html', acteur = info_acteur, liste = liste_filmes_joues, token=token)
 
 @app.route("/realisateur/<id_realisateur>")
 def page_realisateur(id_realisateur):
+    token = getUserToken()
     #Requête info realisateur.
     req = "SELECT a.nom_realisateur, DATE_FORMAT(a.date_naissance, '%D %M %Y'), a.pays_origine, a.sexe, a.biographie FROM realisateur a WHERE a.id_realisateur LIKE '" + id_realisateur + "';"
 
@@ -283,7 +337,7 @@ def page_realisateur(id_realisateur):
         i += 1
     cur.close()
 
-    return render_template('realisateur.html', realisateur = info_realisateur, liste = liste_filmes_crees)
+    return render_template('realisateur.html', realisateur = info_realisateur, liste = liste_filmes_crees, token=token)
 
 if __name__ == "__main__":
     app.run()
