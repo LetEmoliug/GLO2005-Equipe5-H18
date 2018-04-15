@@ -27,7 +27,8 @@
       <h1 id="nom_usager">{{nom_usager}}</h1></br>
     </div>
     <div id="date">
-        <p id="date_creation" class="date">Date de creation du profil: {{date}}</p>
+        {% for d in date%}
+        <p id="date_creation" class="date">Date de creation du profil: {{d.date}}</p>
     </div>
     <div id="favoris">
         <p>Liste de filmes favoris:</p>
