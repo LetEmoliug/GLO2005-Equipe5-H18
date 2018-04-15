@@ -3,7 +3,7 @@ import pymysql
 import pymysql.cursors
 import hashlib
 
-conn = pymysql.connect(host='localhost', user="root", password="Kappa", db="tpbd")
+conn = pymysql.connect(host='localhost', user="root", password="root", db="projetsession")
 app = Flask(__name__)
 
 VarGlobal = {}
