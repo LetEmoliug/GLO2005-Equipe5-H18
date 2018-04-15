@@ -132,7 +132,7 @@ def user_page(user_id):
     token = getUserToken()
     cur = conn.cursor()
 
-    req1 = "select u.date_creation from utilisateur u where user_id = " + user_id + ";"
+    req1 = "select DATE_FORMAT(date_creation, '%D %M %Y') from utilisateur  where nom_usager = " + user_id + ";"
     cur.execute(req1)
     date_creation = cur
 
