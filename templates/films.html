@@ -80,7 +80,7 @@
 
       var checkBoxes = document.querySelectorAll(".filterSection li input");
 
-      for (var i = 0; i < checkBoxes.lengt; i++) {
+      for (var i = 0; i < checkBoxes.length; i++) {
           checkBoxes[i].addEventListener("click", filterItems, false);
           checkBoxes[i].checked = true;
       }
@@ -101,7 +101,7 @@
           for (var i = 0; i < itemsToFilter.length; i++) {
               var currentItem = itemsToFilter[i];
 
-              if (currentItem.getAttribure("data-type") == itemType) {
+              if (currentItem.getAttribute("data-type") == itemType) {
                   removeClass(currentItem, classToRemove);
                   addClass(currentItem, classToAdd);
               }
@@ -112,7 +112,7 @@
           var currentClassValue = element.className;
 
           if (currentClassValue.indexOf(classToAdd) == -1) {
-              if ((currentClassValue == null) || currentClassValue === "")) {
+              if ((currentClassValue == null) || (currentClassValue === "")) {
                   element.className = classToAdd;
               } else {
                   element.className += " " + classToAdd;
