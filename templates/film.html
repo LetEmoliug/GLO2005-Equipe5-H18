@@ -113,6 +113,7 @@
         <input type="submit" name="update_button" value="Éditer">
         <input type="submit" name="delete_button" value="Supprimer">
       </form>
+      <p class="info"> Nombre de personnes qui aiment votre critique : {{c.nombre_aimes}}</p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
       <p class="info"> Note attribuée : {{c.note}}</p></br>
       <p id="texte_critique_user" class="info">{{c.texte}}</p>
@@ -124,6 +125,16 @@
       {% if token != c.nom_usager %}
       <h3> {{c.titre_critique}}</h3>
       <p class="info"> Par : <a href="{{c.nom_usager_url}}">{{c.nom_usager}}</a></p></br>
+      {% if token %}
+      {% if token not in c.user_qui_ont_aime %}
+      <form method="post" id="formLike"></form>
+      <button form="formLike" type="submit" name="like" value="{{c.nom_usager}}">Aimer</button></br></br>
+      {% else %}
+      <form method="post" id="formUnlike"></form>
+      <button form="formUnlike" type="submit" name="unlike" value="{{c.nom_usager}}">Ne plus aimer</button></br></br>
+      {% endif %}
+      {% endif %}
+      <p class="info"> Nombre de personnes qui aiment cette critique : {{c.nombre_aimes}}</p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
       <p class="info"> Note attribuée : {{c.note}}</p></br>
       <p id="texte_critique" class="info">{{c.texte}}</p>

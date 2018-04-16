@@ -32,6 +32,19 @@
       <div class="critique">
         <h3> {{c.titre_critique}}</h3>
         <p class="info"> Film : <a href="{{c.film_url}}">{{c.titre_film}}</a></p></br>
+	    {% if token %}
+	    {% if token == nom_usager %}
+	    <form method="post" id="del_crit_page_user"></form>
+        <button form="del_crit_page_user" type="submit" name="delete_button" value="{{c.id_film}}">Supprimer</button></br></br>
+	    {% elif token not in c.user_qui_ont_aime %}
+        <form method="post" id="formLike"></form>
+        <button form="formLike" type="submit" name="like" value="{{c.id_film}}">Aimer</button></br></br>
+        {% else %}
+        <form method="post" id="formUnlike"></form>
+        <button form="formUnlike" type="submit" name="unlike" value="{{c.id_film}}">Ne plus aimer</button></br></br>
+        {% endif %}
+        {% endif %}
+ 	    <p class="info"> Nombre de personnes qui aiment cette critique : {{c.nombre_aimes}}</p></br>
         <p class="info"> {{c.date_ecriture}}</p></br>
         <p class="info"> Note attribuée : {{c.note}}</p></br>
         <p id="texte_critique" class="info">{{c.texte}}</p>

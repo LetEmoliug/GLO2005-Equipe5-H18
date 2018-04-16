@@ -39,6 +39,8 @@ def film_page(film_id):
     titre_crit_modif = request.form.get("titre_crit_modif")
     note_modif = request.form.get('note_modif')
     texte_modif = request.form.get("texte_modif")
+    aimer = request.form.get('like')
+    ne_plus_aimer = request.form.get("unlike")
 
     cur = conn.cursor()
 
@@ -64,6 +66,24 @@ def film_page(film_id):
     if titre_crit and note and texte:
         insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
         cur.execute(insertion)
+        conn.commit()
+
+    if aimer:
+        r0 = "Select id_critique from critique where nom_usager = '" + aimer + "' and id_film = " + film_id + ";"
+        cur.execute(r0)
+        for Tuple in cur:
+            critique_id = str(Tuple[0])
+        aimer_crit = "insert into aimes(id_critique, nom_usager) values("+critique_id+", '"+token+"') on duplicate key update id_critique = id_critique;"
+        cur.execute(aimer_crit)
+        conn.commit()
+
+    if ne_plus_aimer:
+        r0 = "Select id_critique from critique where nom_usager = '" + ne_plus_aimer + "' and id_film = " + film_id + ";"
+        cur.execute(r0)
+        for Tuple in cur:
+            critique_id = str(Tuple[0])
+        plus_aimer_crit = "delete from aimes where id_critique = "+critique_id+" and nom_usager = '"+token+"';"
+        cur.execute(plus_aimer_crit)
         conn.commit()
 
     r1 = "SELECT titre_film, DATE_FORMAT(date_parution, '%D %M %Y'), duree, note_moyenne, genre, synopsis FROM film WHERE id_film=" + film_id + ";"
@@ -121,16 +141,67 @@ def film_page(film_id):
             usager_courant['texte'] = Tuple[3]
             usager_courant['note'] = Tuple[4]
 
+        cur2 = conn.cursor()
+
+        r5 = "select aimes.nom_usager from aimes inner join critique using (id_critique)" \
+             " where id_film =" + film_id + " and critique.nom_usager='"+Tuple[0]+"';"
+        cur2.execute(r5)
+        nbr_aimes = 0
+        critiques[i]['user_qui_ont_aime'] = []
+        for Tuple in cur2:
+            nbr_aimes += 1
+            critiques[i]['user_qui_ont_aime'].append(Tuple[0])
+        critiques[i]['nombre_aimes'] = nbr_aimes
+
+        cur2.close()
+
         i += 1
+
     cur.close()
 
     return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques,
                            token=token, usagers=usagers, modification=modification, usager_courant=usager_courant)
 
-@app.route("/user/<user_id>")
+@app.route("/user/<user_id>", methods=['GET', 'POST'])
 def user_page(user_id):
     token = getUserToken()
+    suppression = request.form.get("delete_button")
+    aimer = request.form.get('like')
+    ne_plus_aimer = request.form.get("unlike")
+
     cur = conn.cursor()
+
+    if suppression:
+        delete_crit = "delete from critique where nom_usager = '" + token + "' and id_film = " + suppression + ";"
+        cur.execute(delete_crit)
+        conn.commit()
+
+        auto_inc = "select max(id_critique)from critique;"
+        cur.execute(auto_inc)
+        for Tuple in cur:
+            inc_value = str(Tuple[0])
+
+        update_auto_increment = "alter table critique AUTO_INCREMENT = " + inc_value + ";"
+        cur.execute(update_auto_increment)
+        conn.commit()
+
+    if aimer:
+        r0 = "Select id_critique from critique where nom_usager = '" + user_id + "' and id_film = " + aimer + ";"
+        cur.execute(r0)
+        for Tuple in cur:
+            critique_id = str(Tuple[0])
+        aimer_crit = "insert into aimes(id_critique, nom_usager) values("+critique_id+", '"+token+"') on duplicate key update id_critique = id_critique;"
+        cur.execute(aimer_crit)
+        conn.commit()
+
+    if ne_plus_aimer:
+        r0 = "Select id_critique from critique where nom_usager = '" + user_id + "' and id_film = " + ne_plus_aimer + ";"
+        cur.execute(r0)
+        for Tuple in cur:
+            critique_id = str(Tuple[0])
+        plus_aimer_crit = "delete from aimes where id_critique = "+critique_id+" and nom_usager = '"+token+"';"
+        cur.execute(plus_aimer_crit)
+        conn.commit()
 
     requete1 = "select f.titre_film, c.titre_critique, c.date_ecriture, c.texte, c.note, id_film from critique as c inner join film as f using(id_film) where nom_usager ='" + user_id + "';"
     cur.execute(requete1)
@@ -144,6 +215,22 @@ def user_page(user_id):
         critiques[i]['texte'] = Tuple[3]
         critiques[i]['note'] = Tuple[4]
         critiques[i]['film_url'] = "/film/" + str(Tuple[5])
+        critiques[i]['id_film'] = Tuple[5]
+
+        cur2 = conn.cursor()
+
+        r5 = "select aimes.nom_usager from aimes inner join critique using (id_critique)" \
+             " where id_film =" + str(Tuple[5]) + " and critique.nom_usager='" + user_id + "';"
+        cur2.execute(r5)
+        nbr_aimes = 0
+        critiques[i]['user_qui_ont_aime'] = []
+        for Tuple in cur2:
+            nbr_aimes += 1
+            critiques[i]['user_qui_ont_aime'].append(Tuple[0])
+        critiques[i]['nombre_aimes'] = nbr_aimes
+
+        cur2.close()
+
         i += 1
 
     cur.close()
