@@ -179,7 +179,6 @@ def film_page(film_id):
         cur.execute(supp_favori)
         conn.commit()
 
-    cur = conn.cursor()
     req5 = "select nom_usager from favoris where id_film = " + film_id + ";"
     cur.execute(req5)
     i = 0
@@ -187,10 +186,10 @@ def film_page(film_id):
         liste_favoris.append(Tuple[0])
         i += 1
 
-    req6 = "select count(f.nom_usager) from favoris f where id_film = " + film_id + ";"
-
-    cur = conn.cursor()
-    nbr_favoris = cur.execute(req6)
+    req6 = "select count(*) from favoris where id_film = " + film_id + ";"
+    cur.execute(req6)
+    for Tuple in cur:
+        nbr_favoris = Tuple[0]
 
     cur.close()
 
@@ -272,7 +271,6 @@ def user_page(user_id):
         i += 1
 
     followed = False
-    cur = conn.cursor()
     if bouton_suivre:
         req = "select COUNT(usager_suivi) from suivre where usager_qui_suit LIKE '" + token + "' and usager_suivi LIKE '" + user_id + "';"
         cur.execute(req)
@@ -364,7 +362,6 @@ def ResultatsRecherche():
         i += 1
 
     requete_acteur = "SELECT id_acteur, nom_acteur FROM acteur WHERE nom_acteur LIKE '%" + recherche + "%';"
-    cur = conn.cursor()
     cur.execute(requete_acteur)
 
     acteur = []
@@ -376,7 +373,6 @@ def ResultatsRecherche():
         i += 1
 
     requete_realisateur = "SELECT id_realisateur, nom_realisateur FROM realisateur WHERE nom_realisateur LIKE '%" + recherche + "%';"
-    cur = conn.cursor()
     cur.execute(requete_realisateur)
 
     realisateur = []
@@ -388,7 +384,6 @@ def ResultatsRecherche():
         i += 1
 
     requete_utilisateur = "SELECT nom_usager FROM utilisateur WHERE nom_usager LIKE '%" + recherche + "%';"
-    cur = conn.cursor()
     cur.execute(requete_utilisateur)
 
     utilisateur = []
@@ -418,7 +413,6 @@ def Films():
         i += 1
 
     requete_genre = "SELECT DISTINCT genre FROM film;"
-    cur = conn.cursor()
     cur.execute(requete_genre)
 
 
