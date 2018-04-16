@@ -26,6 +26,29 @@
     <div>
       <h1 id="nom_usager">{{nom_usager}}</h1></br>
     </div>
+    <div id="date">
+        {% for d in date%}
+        <p id="date_creation" class="date">Date de creation du profil: {{d.date}}</p></br>
+        {% endfor %}
+    </div>
+    <div id="favoris">
+        <p>Liste de films favoris:</p></br>
+        {% for f in favoris %}
+        <p id="liste_favoris" class="favoris"><a href="{{f.film_url}}">{{f.titre}}</a></p></br>
+        {% endfor %}
+    </div>
+    <div id="suivit">
+        <p>Abonnés:</p>
+        {% for s in suivit %}
+        <p id="suivit_par" class="suivit"><a href="{{s.user_url}}">{{s.username}}</a></p></br>
+        {% endfor %}
+    </div>
+    <div id="suit">
+        <p>Abonnements:</p>
+        {% for c in suit %}
+        <p id="suivre" class="suit"><a href="{{c.user_url}}">{{c.username}}</a></p></br>
+        {% endfor %}
+    </div>
     <div id="critiques">
       <p>Critiques :</p>
       {% for c in critiques %}
