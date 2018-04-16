@@ -237,14 +237,14 @@ def user_page(user_id):
         liste_dates_creation[i]['date'] = Tuple[0]
         i += 1
 
-    req2 = "select f.titre_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = '" + user_id + "';"
+    req2 = "select f.titre_film, f.id_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = '" + user_id + "';"
     cur.execute(req2)
 
     liste_filmes_favoris = []
     i = 0
     for Tuple in cur:
         liste_filmes_favoris.append({})
-        liste_filmes_favoris[i]['film_url'] = "/film/" + str(Tuple[0])
+        liste_filmes_favoris[i]['film_url'] = "/film/" + str(Tuple[1])
         liste_filmes_favoris[i]['titre'] = Tuple[0]
         i += 1
 
@@ -341,7 +341,7 @@ def user_page(user_id):
         i += 1
 
     cur.close()
-    return render_template('user.html', liste= liste_filmes_favoris, date = liste_dates_creation, suivit = liste_users_qui_suivent,
+    return render_template('user.html', favoris = liste_filmes_favoris, date = liste_dates_creation, suivit = liste_users_qui_suivent,
                            suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token, bouton=bouton_suivre, suivi=followed)
 
 @app.route("/ResultatRecherche", methods=['POST'])
