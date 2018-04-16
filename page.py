@@ -170,7 +170,7 @@ def film_page(film_id):
     id_film = film_id
 
     if favori:
-        ajout_favori = "insert into favoris values('" + token + "', " + film_id + ");"
+        ajout_favori = "insert into favoris values('" + token + "', " + film_id + ")on duplicate key update nom_usager = nom_usager;"
         cur.execute(ajout_favori)
         conn.commit()
 
@@ -210,7 +210,7 @@ def user_page(user_id):
         bouton_suivre = False
 
     if suivi:
-        req = "INSERT INTO suivre VALUES('" + token + "', '" + user_id + "');"
+        req = "INSERT INTO suivre VALUES('" + token + "', '" + user_id + "') on duplicate key update usager_qui_suit = usager_qui_suit;"
         cur.execute(req)
         conn.commit()
 
