@@ -407,3 +407,8 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2018-04-04 14:00:53
+CREATE INDEX idx_film ON film (id_film, titre_film);
+CREATE INDEX idx_acteur ON acteur (id_acteur, nom_acteur);
+CREATE INDEX idx_realisateur ON realisateur (id_realisateur, nom_realisateur);
+CREATE INDEX idx_jouer ON jouer (id_film, id_acteur);
+CREATE INDEX idx_creer ON creer (id_film, id_realisateur);

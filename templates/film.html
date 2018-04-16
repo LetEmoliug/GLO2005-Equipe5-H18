@@ -18,7 +18,7 @@
     <a href="/login">Se connecter</a>
     <a href="/signup">Créer un compte</a>
     {% else %}
-    <span>{{ token }}</span>
+    <span><a href="/user/{{ token }}">{{ token }}</a></span>
     <a href="/logout">Se déconnecter</a>
     {% endif %}
   </div>

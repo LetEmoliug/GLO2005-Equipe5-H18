@@ -1,6 +1,12 @@
 # GLO2005-Equipe5-H18
 Projet de session H18 du projet de GLO-2005
 
+## Lancer GLO-2005 IMDb
+
+Dans le répertoire racine, lancer `python3 page.py` pour démarrer le serveur en local.
+
+Le site est ensuite disponible sur le port 5000 du localhost (127.0.0.1)
+
 ## Structure du projet
 
 Les templates HTML doivent êtres inclus dans `/templates` pour être interprétés par Flask  
@@ -12,6 +18,6 @@ De plus, il faudra inclure la ligne suivante dans le header du fichier HTML dans
 ## Importer la database
 
 En ligne de commande UNIX, il suffit de taper la ligne de commande suivante, où `[username]` correspond à votre nom d'utilisateur :
-`mysql -u [username] -p < BD_finale.sql`.
+`mysql -u [username] -p < BD.sql`.
 
 La base de données sera ensuite importée sous le nom `projetsession`.

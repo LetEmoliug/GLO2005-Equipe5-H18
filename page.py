@@ -66,9 +66,15 @@ def film_page(film_id):
         conn.commit()
 
     if titre_crit and note and texte:
-        insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
-        cur.execute(insertion)
-        conn.commit()
+        critique_deja_presente = "select count(*) from critique where nom_usager='"+token+"' and id_film="+film_id+";"
+        cur.execute(critique_deja_presente)
+        for Tuple in cur:
+            nbr_critique = Tuple[0]
+
+        if nbr_critique == 0:
+            insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
+            cur.execute(insertion)
+            conn.commit()
 
     if aimer:
         r0 = "Select id_critique from critique where nom_usager = '" + aimer + "' and id_film = " + film_id + ";"
@@ -193,9 +199,25 @@ def user_page(user_id):
     suppression = request.form.get("delete_button")
     aimer = request.form.get('like')
     ne_plus_aimer = request.form.get("unlike")
+    suivi = request.form.get('follow')
+    non_suivi = request.form.get('unfollow')
 
 
     cur = conn.cursor()
+
+    bouton_suivre = True
+    if token == None or token == user_id:
+        bouton_suivre = False
+
+    if suivi:
+        req = "INSERT INTO suivre VALUES('" + token + "', '" + user_id + "');"
+        cur.execute(req)
+        conn.commit()
+
+    if non_suivi:
+        req = "DELETE FROM suivre WHERE usager_qui_suit LIKE '" + token + "' AND usager_suivi LIKE '" + user_id + "';"
+        cur.execute(req)
+        conn.commit()
 
     if modification:
         return redirect("/film/" + modification + "?update_button=Éditer")
@@ -242,6 +264,15 @@ def user_page(user_id):
         liste_users_suivit[i]['user_url'] = "/user/" + str(Tuple[0])
         liste_users_suivit[i]['username'] = Tuple[0]
         i += 1
+
+    followed = False
+    cur = conn.cursor()
+    if bouton_suivre:
+        req = "select COUNT(usager_suivi) from suivre where usager_qui_suit LIKE '" + token + "' and usager_suivi LIKE '" + user_id + "';"
+        cur.execute(req)
+        for Tuple in cur:
+            if Tuple[0] == 1:
+                followed = True
 
     if suppression:
         delete_crit = "delete from critique where nom_usager = '" + token + "' and id_film = " + suppression + ";"
@@ -307,7 +338,7 @@ def user_page(user_id):
 
     cur.close()
     return render_template('user.html', liste= liste_filmes_favoris, date = liste_dates_creation, suivit = liste_users_qui_suivent,
-                           suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token)
+                           suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token, bouton=bouton_suivre, suivi=followed)
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():
@@ -366,8 +397,7 @@ def ResultatsRecherche():
 @app.route("/Films", methods=['GET', 'POST'])
 def Films():
     token = getUserToken()
-
-    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film;"
+    requete = "SELECT id_film, titre_film, note_moyenne, genre FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -378,11 +408,23 @@ def Films():
         films[i]['film_url'] = "/film/" + str(Tuple[0])
         films[i]['titre'] = Tuple[1]
         films[i]['moyenne'] = Tuple[2]
-        films[i]['synopsis'] = Tuple[3]
+        films[i]['genre'] = Tuple[3]
+        i += 1
+
+    requete_genre = "SELECT DISTINCT genre FROM film;"
+    cur = conn.cursor()
+    cur.execute(requete_genre)
+
+
+    list_genre = []
+    i = 0
+    for Tuple in cur:
+        list_genre.append({})
+        list_genre[i]['genre'] = Tuple[0]
         i += 1
 
     #return render_template('ResultatRecherche.html', films=films)
-    return render_template('films.html', films=films, token=token)
+    return render_template('films.html', films=films, token=token, genre=list_genre)
 
 @app.route("/signup")
 def signup():
@@ -426,7 +468,6 @@ def checklogin():
     for Tuple in cur:
         if Tuple[0] == 0:
             return redirect('/login')
-    #username = hashlib.sha256(bytes(username, encoding='utf-8')).hexdigest()
     resp = make_response(redirect('/'))
     resp.set_cookie('token', username)
     return resp
