@@ -2,6 +2,34 @@
   <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/header.css') }}">
+  <style>
+
+      .filterSection li {
+      list-style: none;
+      margin: 0px;
+      padding: 5px;
+      display: inline;
+      }
+
+
+
+      .showItem {
+      display: list-item;
+      }
+
+      .hideItem {
+      display: none;
+      }
+
+      #itemsToFilter li {
+      list-style: none;
+      background-position: 0 3px;
+      background-repeat: no-repeat;
+      margin: 15 px;
+      padding-left: 40px;
+      font-size: 15pt;
+      }
+  </style>
   </head>
   <body>
     <div id="header">
@@ -23,10 +51,94 @@
       <a href="/logout">Se déconnecter</a>
       {% endif %}
     </div>
-    <div class="topfilms">
+  <ul class="filterSection">
+      <li>
+          <strong>Genre:</strong>
+          <input checked="true" type="checkbox" value="Enfants"/>
+          <label>Enfants</label>
+      </li>
+      <li>
+          <input checked="true" type="checkbox" value="Historique">
+          <label>Historique</label>
+      </li>
+      <li>
+          <input checked="true" type="checkbox" value="Comedie">
+          <label>Comedie</label>
+      </li>
+      <li>
+          <input checked="true" type="checkbox" value="Horreur">
+          <label>Horreur</label>
+      </li>
+  </ul>
+  <ul id="itemsToFilter">
       {% for f in films %}
-      <p class="titre"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p><br>
+      <li data-type="Horreur"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></li>
       {% endfor %}
-    </div>
+  </ul>
+  <script>
+      var itemsToFilter = document.querySelectorAll("#itemsToFilter li");
+
+      var checkBoxes = document.querySelectorAll(".filterSection li input");
+
+      for (var i = 0; i < checkBoxes.lengt; i++) {
+          checkBoxes[i].addEventListener("click", filterItems, false);
+          checkBoxes[i].checked = true;
+      }
+
+      function filterItems(e) {
+          var clickedItem = e.target;
+
+          if (clickedItem.checked == true) {
+              hideOrShowItems (clickedItem.value, "hideItem", "showItem");
+
+          } else if (clickedItem.checked == false) {
+              hideOrShowItems (clickedItem.value, "showItem", "hideItem");
+
+          }
+      }
+
+      function hideOrShowItems(itemType, classToRemove, classToAdd) {
+          for (var i = 0; i < itemsToFilter.length; i++) {
+              var currentItem = itemsToFilter[i];
+
+              if (currentItem.getAttribure("data-type") == itemType) {
+                  removeClass(currentItem, classToRemove);
+                  addClass(currentItem, classToAdd);
+              }
+          }
+      }
+
+      function addClass(element, classToAdd) {
+          var currentClassValue = element.className;
+
+          if (currentClassValue.indexOf(classToAdd) == -1) {
+              if ((currentClassValue == null) || currentClassValue === "")) {
+                  element.className = classToAdd;
+              } else {
+                  element.className += " " + classToAdd;
+              }
+          }
+      }
+
+      function removeClass(element, classToRemove) {
+          var currentClassValue = element.className;
+
+          if (currentClassValue == classToRemove) {
+              element.className = "";
+              return;
+          }
+
+          var classValues = currentClassValue.split(" ");
+          var filteredList = [];
+
+          for (var i = 0 ; i < classValues.length; i++) {
+              if (classToRemove != classValues[i]) {
+                  filteredList.push(classValues[i]);
+              }
+          }
+
+          element.className = filteredList.join(" ");
+      }
+  </script>
   </body>
 </html>
