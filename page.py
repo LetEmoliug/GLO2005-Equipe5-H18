@@ -187,10 +187,16 @@ def film_page(film_id):
         liste_favoris.append(Tuple[0])
         i += 1
 
+    req6 = "select count(f.nom_usager) from favoris f where id_film = " + film_id + ";"
+
+    cur = conn.cursor()
+    nbr_favoris = cur.execute(req6)
+
     cur.close()
 
     return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques,
-                           token=token, usagers=usagers, modification=modification, usager_courant=usager_courant, favori = liste_favoris, id_film = id_film)
+                           token=token, usagers=usagers, modification=modification, usager_courant=usager_courant,
+                           favori = liste_favoris, id_film = id_film, nbr_favoris = nbr_favoris)
 
 @app.route("/user/<user_id>", methods=['GET', 'POST'])
 def user_page(user_id):
