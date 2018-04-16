@@ -175,7 +175,7 @@ def user_page(user_id):
     cur = conn.cursor()
 
     bouton_suivre = True
-    if token == "" or token == user_id:
+    if token == None or token == user_id:
         bouton_suivre = False
 
     if suivi:
