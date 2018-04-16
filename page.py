@@ -169,8 +169,24 @@ def user_page(user_id):
     suppression = request.form.get("delete_button")
     aimer = request.form.get('like')
     ne_plus_aimer = request.form.get("unlike")
+    suivi = request.form.get('follow')
+    non_suivi = request.form.get('unfollow')
 
     cur = conn.cursor()
+
+    bouton_suivre = True
+    if token == "" or token == user_id:
+        bouton_suivre = False
+
+    if suivi:
+        req = "INSERT INTO suivre VALUES('" + token + "', '" + user_id + "');"
+        cur.execute(req)
+        conn.commit()
+
+    if non_suivi:
+        req = "DELETE FROM suivre WHERE usager_qui_suit LIKE '" + token + "' AND usager_suivi LIKE '" + user_id + "';"
+        cur.execute(req)
+        conn.commit()
 
     if modification:
         return redirect("/film/" + modification + "?update_button=Éditer")
@@ -217,6 +233,17 @@ def user_page(user_id):
         liste_users_suivit[i]['user_url'] = "/user/" + str(Tuple[0])
         liste_users_suivit[i]['username'] = Tuple[0]
         i += 1
+
+    followed = False
+    cur = conn.cursor()
+    if bouton_suivre:
+        req = "select COUNT(usager_suivi) from suivre where usager_qui_suit LIKE '" + token + "' and usager_suivi LIKE '" + user_id + "';"
+        cur.execute(req)
+        for Tuple in cur:
+            if Tuple[0] == 1:
+                followed = True
+
+    print(followed)
 
     if suppression:
         delete_crit = "delete from critique where nom_usager = '" + token + "' and id_film = " + suppression + ";"
@@ -282,7 +309,7 @@ def user_page(user_id):
 
     cur.close()
     return render_template('user.html', liste= liste_filmes_favoris, date = liste_dates_creation, suivit = liste_users_qui_suivent,
-                           suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token)
+                           suit = liste_users_suivit, nom_usager=user_id, critiques=critiques, token=token, bouton=bouton_suivre, suivi=followed)
 
 @app.route("/ResultatRecherche", methods=['POST'])
 def ResultatsRecherche():

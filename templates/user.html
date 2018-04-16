@@ -26,10 +26,21 @@
     <div>
       <h1 id="nom_usager">{{nom_usager}}</h1></br>
     </div>
+    {% if bouton %}
+    <div>
+      <form action="/user/{{nom_usager}}" method="post">
+	{% if suivi %}
+	<button type="submit" name="unfollow" value="{{nom_usager}}">Ne plus suivre</button>
+	{% else %}
+	<button type="submit" name="follow" value="{{nom_usager}}">Suivre</button>
+	{% endif %}
+      </form>
+    </div>
+    {% endif %}
     <div id="date">
-        {% for d in date%}
-        <p id="date_creation" class="date">Date de creation du profil: {{d.date}}</p></br>
-        {% endfor %}
+      {% for d in date%}
+      <p id="date_creation" class="date">Date de creation du profil: {{d.date}}</p></br>
+      {% endfor %}
     </div>
     <div id="favoris">
         <p>Liste de films favoris:</p></br>
