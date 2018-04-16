@@ -52,27 +52,17 @@
       {% endif %}
     </div>
   <ul class="filterSection">
+      {% for g in genre %}
+
       <li>
-          <strong>Genre:</strong>
-          <input checked="true" type="checkbox" value="Enfants"/>
-          <label>Enfants</label>
+          <input checked="true" type="checkbox" value="{{g.genre}}"/>
+          <label>{{g.genre}}</label>
       </li>
-      <li>
-          <input checked="true" type="checkbox" value="Historique">
-          <label>Historique</label>
-      </li>
-      <li>
-          <input checked="true" type="checkbox" value="Comedie">
-          <label>Comedie</label>
-      </li>
-      <li>
-          <input checked="true" type="checkbox" value="Horreur">
-          <label>Horreur</label>
-      </li>
+      {% endfor%}
   </ul>
   <ul id="itemsToFilter">
       {% for f in films %}
-      <li data-type="Horreur"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></li>
+      <li data-type="{{f.genre}}"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></li>
       {% endfor %}
   </ul>
   <script>

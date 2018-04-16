@@ -381,8 +381,21 @@ def Films():
         films[i]['moyenne'] = Tuple[2]
         films[i]['genre'] = Tuple[3]
         i += 1
+
+    requete_genre = "SELECT DISTINCT genre FROM film;"
+    cur = conn.cursor()
+    cur.execute(requete_genre)
+
+
+    list_genre = []
+    i = 0
+    for Tuple in cur:
+        list_genre.append({})
+        list_genre[i]['genre'] = Tuple[0]
+        i += 1
+
     #return render_template('ResultatRecherche.html', films=films)
-    return render_template('films.html', films=films, token=token)
+    return render_template('films.html', films=films, token=token, genre=list_genre)
 
 @app.route("/signup")
 def signup():
