@@ -368,7 +368,7 @@ def ResultatsRecherche():
 @app.route("/Films")
 def Films():
     token = getUserToken()
-    requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film;"
+    requete = "SELECT id_film, titre_film, note_moyenne, genre FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -379,7 +379,7 @@ def Films():
         films[i]['film_url'] = "/film/" + str(Tuple[0])
         films[i]['titre'] = Tuple[1]
         films[i]['moyenne'] = Tuple[2]
-        films[i]['synopsis'] = Tuple[3]
+        films[i]['genre'] = Tuple[3]
         i += 1
     #return render_template('ResultatRecherche.html', films=films)
     return render_template('films.html', films=films, token=token)
