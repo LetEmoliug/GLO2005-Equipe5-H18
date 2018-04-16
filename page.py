@@ -243,8 +243,6 @@ def user_page(user_id):
             if Tuple[0] == 1:
                 followed = True
 
-    print(followed)
-
     if suppression:
         delete_crit = "delete from critique where nom_usager = '" + token + "' and id_film = " + suppression + ";"
         cur.execute(delete_crit)
