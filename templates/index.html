@@ -1,7 +1,7 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
   </head>
   <body>
     <div id="header">
@@ -26,7 +26,7 @@
     <div class="topfilms">
       {% for f in films %}
 	 <div class="film-card">
-	   <p class="titre"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
+	   <p class="titre-film"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
 	   <p class="moyenne">{{f.moyenne}}</p>
 	   <p class="synopsis">{{f.synopsis}}</p>
 	 </div>
