@@ -426,7 +426,6 @@ def checklogin():
     for Tuple in cur:
         if Tuple[0] == 0:
             return redirect('/login')
-    #username = hashlib.sha256(bytes(username, encoding='utf-8')).hexdigest()
     resp = make_response(redirect('/'))
     resp.set_cookie('token', username)
     return resp

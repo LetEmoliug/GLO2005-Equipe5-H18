@@ -12,6 +12,6 @@ De plus, il faudra inclure la ligne suivante dans le header du fichier HTML dans
 ## Importer la database
 
 En ligne de commande UNIX, il suffit de taper la ligne de commande suivante, où `[username]` correspond à votre nom d'utilisateur :
-`mysql -u [username] -p < BD_finale.sql`.
+`mysql -u [username] -p < BD.sql`.
 
 La base de données sera ensuite importée sous le nom `projetsession`.
