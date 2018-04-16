@@ -41,6 +41,8 @@ def film_page(film_id):
     texte_modif = request.form.get("texte_modif")
     aimer = request.form.get('like')
     ne_plus_aimer = request.form.get("unlike")
+    favori = request.form.get('ajout_favori')
+    retirer_favori = request.form.get('supp_button')
 
     cur = conn.cursor()
 
@@ -157,10 +159,32 @@ def film_page(film_id):
 
         i += 1
 
+    liste_favoris = []
+
+    id_film = film_id
+
+    if favori:
+        ajout_favori = "insert into favoris values('" + token + "', " + film_id + ");"
+        cur.execute(ajout_favori)
+        conn.commit()
+
+    if retirer_favori:
+        supp_favori = "delete from favoris where nom_usager = '" + token + "' and id_film = " + film_id + ";"
+        cur.execute(supp_favori)
+        conn.commit()
+
+    cur = conn.cursor()
+    req5 = "select nom_usager from favoris where id_film = " + film_id + ";"
+    cur.execute(req5)
+    i = 0
+    for Tuple in cur:
+        liste_favoris.append(Tuple[0])
+        i += 1
+
     cur.close()
 
     return render_template('film.html', film=film_info, acteurs=acteurs, realisateurs=realisateurs, critiques=critiques,
-                           token=token, usagers=usagers, modification=modification, usager_courant=usager_courant)
+                           token=token, usagers=usagers, modification=modification, usager_courant=usager_courant, favori = liste_favoris, id_film = id_film)
 
 @app.route("/user/<user_id>", methods=['GET', 'POST'])
 def user_page(user_id):
@@ -169,6 +193,7 @@ def user_page(user_id):
     suppression = request.form.get("delete_button")
     aimer = request.form.get('like')
     ne_plus_aimer = request.form.get("unlike")
+
 
     cur = conn.cursor()
 
@@ -338,9 +363,10 @@ def ResultatsRecherche():
         i += 1
     return render_template('ResultatRecherche.html', film=film, acteur=acteur, realisateur=realisateur, utilisateur=utilisateur, token=token)
 
-@app.route("/Films")
+@app.route("/Films", methods=['GET', 'POST'])
 def Films():
     token = getUserToken()
+
     requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
@@ -354,6 +380,7 @@ def Films():
         films[i]['moyenne'] = Tuple[2]
         films[i]['synopsis'] = Tuple[3]
         i += 1
+
     #return render_template('ResultatRecherche.html', films=films)
     return render_template('films.html', films=films, token=token)
 

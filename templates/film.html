@@ -24,6 +24,19 @@
   </div>
   <div id="film-info">
     <h1 id="titre">{{film.titre}}</h1></br>
+    <div id="favori">
+      {% if token %}
+      {% if token not in favori %}
+      <form method="post" id="formFavori">
+        <button form="formFavori" type="submit" name="ajout_favori" value="{{id_film}}">Favori</button></br></br>
+      </form>
+      {% else %}
+      <form method="post" id="formSuppFavori">
+        <button form="formSuppFavori" type="submit" name="supp_button" value="{{id_film}}">Retirer favori</button></br></br>
+      </form>
+      {% endif %}
+      {% endif %}
+    </div>
     <p id="date-sortie" class="info">Date de sortie : {{film.date}}</p></br>
     <p id="duree" class="info">Durée : {{film.duree}}</p></br>
     <p id="moyenne" class="info">Note moyenne des utilisateurs : {{film.note}}</p></br>
