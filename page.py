@@ -64,9 +64,15 @@ def film_page(film_id):
         conn.commit()
 
     if titre_crit and note and texte:
-        insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
-        cur.execute(insertion)
-        conn.commit()
+        critique_deja_presente = "select count(*) from critique where nom_usager='"+token+"' and id_film="+film_id+";"
+        cur.execute(critique_deja_presente)
+        for Tuple in cur:
+            nbr_critique = Tuple[0]
+
+        if nbr_critique == 0:
+            insertion = "insert into critique(nom_usager, id_film, titre_critique, date_ecriture, texte, note) values('"+token+"', "+film_id+", '"+titre_crit+"', curdate(), '"+texte+"', '"+note+"');"
+            cur.execute(insertion)
+            conn.commit()
 
     if aimer:
         r0 = "Select id_critique from critique where nom_usager = '" + aimer + "' and id_film = " + film_id + ";"
