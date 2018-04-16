@@ -57,8 +57,9 @@
         <p class="info"> Film : <a href="{{c.film_url}}">{{c.titre_film}}</a></p></br>
 	    {% if token %}
 	    {% if token == nom_usager %}
-	    <form method="post" id="del_crit_page_user"></form>
-        <button form="del_crit_page_user" type="submit" name="delete_button" value="{{c.id_film}}">Supprimer</button></br></br>
+	    <form method="post" id="crit_page_user"></form>
+        <button form="crit_page_user" type="submit" name="update_button" value="{{c.id_film}}">Éditer</button>
+        <button form="crit_page_user" type="submit" name="delete_button" value="{{c.id_film}}">Supprimer</button></br></br>
 	    {% elif token not in c.user_qui_ont_aime %}
         <form method="post" id="formLike"></form>
         <button form="formLike" type="submit" name="like" value="{{c.id_film}}">Aimer</button></br></br>

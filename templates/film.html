@@ -71,7 +71,7 @@
               placeholder="Entrez le texte de la critique ici..."></textarea></br>
     <button form="formEcrireCritique" type="submit">Soumettre la critique</button>
     {% endif %}
-    {% if modification %}
+    {% if modification and token in usagers %}
     <p>Modifier votre critique :</p>
     <form id="formModifCritique" method="post">
       Titre de la critique : <input type="text" name="titre_crit_modif" value="{{usager_courant.titre_critique}}">
@@ -109,10 +109,12 @@
       {% if token and token == c.nom_usager %}
       <h3> {{c.titre_critique}}</h3>
       <p>Ceci est votre critique</p>
-      <form method="post">
+      <form style="display: inline-block">
         <input type="submit" name="update_button" value="Éditer">
-        <input type="submit" name="delete_button" value="Supprimer">
       </form>
+      <form method="post" style="display: inline-block">
+        <input type="submit" name="delete_button" value="Supprimer">
+      </form></br>
       <p class="info"> Nombre de personnes qui aiment votre critique : {{c.nombre_aimes}}</p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
       <p class="info"> Note attribuée : {{c.note}}</p></br>

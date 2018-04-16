@@ -34,7 +34,7 @@ def film_page(film_id):
     titre_crit = request.form.get("titre_crit")
     note = request.form.get('note')
     texte = request.form.get("texte")
-    modification = request.form.get("update_button")
+    modification = request.args.get("update_button")
     suppression = request.form.get("delete_button")
     titre_crit_modif = request.form.get("titre_crit_modif")
     note_modif = request.form.get('note_modif')
@@ -165,11 +165,15 @@ def film_page(film_id):
 @app.route("/user/<user_id>", methods=['GET', 'POST'])
 def user_page(user_id):
     token = getUserToken()
+    modification = request.form.get("update_button")
     suppression = request.form.get("delete_button")
     aimer = request.form.get('like')
     ne_plus_aimer = request.form.get("unlike")
 
     cur = conn.cursor()
+
+    if modification:
+        return redirect("/film/" + modification + "?update_button=Éditer")
 
     req1 = "select DATE_FORMAT(date_creation, '%D %M %Y') from utilisateur where nom_usager = '" + user_id + "';"
     cur.execute(req1)
