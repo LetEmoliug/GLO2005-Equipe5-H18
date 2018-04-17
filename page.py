@@ -433,7 +433,7 @@ def ResultatsRecherche():
 @app.route("/Films", methods=['GET', 'POST'])
 def Films():
     token = getUserToken()
-    requete = "SELECT id_film, titre_film, note_moyenne, genre, date_parution, duree FROM film;"
+    requete = "SELECT id_film, titre_film, note_moyenne, genre, DATE_FORMAT(date_parution, '%D %M %Y'), TIME_FORMAT(duree, '%Hh%i') FROM film ORDER BY note_moyenne DESC;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -443,7 +443,10 @@ def Films():
         films.append({})
         films[i]['film_url'] = "/film/" + str(Tuple[0])
         films[i]['titre'] = Tuple[1]
-        films[i]['moyenne'] = Tuple[2]
+        moyenne = Tuple[2]
+        if Tuple[2] == None:
+            moyenne = "-"
+        films[i]['moyenne'] = moyenne
         films[i]['genre'] = Tuple[3]
         films[i]['date'] = Tuple[4]
         films[i]['duree'] = Tuple[5]
