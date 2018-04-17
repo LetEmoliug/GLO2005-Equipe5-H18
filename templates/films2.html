@@ -42,7 +42,7 @@
               <th>Date</th>
           </tr>
           {% for f in films %}
-          <tr>
+          <tr data-type="{{f.genre}}">
               <td><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></td>
               <td>{{f.moyenne}}</td>
               <td>{{f.genre}}</td>
@@ -52,7 +52,7 @@
           {% endfor %}
       </table>
   <script>
-      var itemsToFilter = document.querySelectorAll("#itemsToFilter li");
+      var itemsToFilter = document.querySelectorAll("#listFilms tr");
 
       var checkBoxes = document.querySelectorAll(".filterSection li input");
 
@@ -62,24 +62,29 @@
       }
 
       function filterItems(e) {
-          var clickedItem = e.target;
+			  var clickedItem = e.target;
+			  console.log(itemsToFilter);
 
           if (clickedItem.checked == true) {
-              hideOrShowItems (clickedItem.value, "hideItem", "showItem");
+              hideOrShowItems (clickedItem.value, "hideItem", false);
 
           } else if (clickedItem.checked == false) {
-              hideOrShowItems (clickedItem.value, "showItem", "hideItem");
+              hideOrShowItems (clickedItem.value, "hideItem", true);
 
           }
       }
 
-      function hideOrShowItems(itemType, classToRemove, classToAdd) {
+      function hideOrShowItems(itemType, classToChange, adding) {
           for (var i = 0; i < itemsToFilter.length; i++) {
               var currentItem = itemsToFilter[i];
 
-              if (currentItem.getAttribute("data-type") == itemType) {
-                  removeClass(currentItem, classToRemove);
-                  addClass(currentItem, classToAdd);
+			      if (currentItem.getAttribute("data-type") == itemType) {
+			      if (adding == false) {
+			      removeClass(currentItem, classToChange);
+			      }
+			      else {
+			      addClass(currentItem, classToChange);
+			      }
               }
           }
       }
