@@ -269,6 +269,9 @@ def user_page(user_id):
         liste_dates_creation[i]['date'] = Tuple[0]
         i += 1
 
+    if not bool(liste_dates_creation):
+        abort(404)
+
     req2 = "select f.id_film, f.titre_film from film f inner join favoris fv on f.id_film = fv.id_film where fv.nom_usager = '" + user_id + "';"
     cur.execute(req2)
 
@@ -430,7 +433,7 @@ def ResultatsRecherche():
 @app.route("/Films", methods=['GET', 'POST'])
 def Films():
     token = getUserToken()
-    requete = "SELECT id_film, titre_film, note_moyenne, genre FROM film;"
+    requete = "SELECT id_film, titre_film, note_moyenne, genre, date_parution, duree FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -442,6 +445,8 @@ def Films():
         films[i]['titre'] = Tuple[1]
         films[i]['moyenne'] = Tuple[2]
         films[i]['genre'] = Tuple[3]
+        films[i]['date'] = Tuple[4]
+        films[i]['duree'] = Tuple[5]
         i += 1
 
     requete_genre = "SELECT DISTINCT genre FROM film;"
@@ -456,7 +461,7 @@ def Films():
         i += 1
 
     #return render_template('ResultatRecherche.html', films=films)
-    return render_template('films.html', films=films, token=token, genre=list_genre)
+    return render_template('films2.html', films=films, token=token, genre=list_genre)
 
 @app.route("/signup")
 def signup():
@@ -527,6 +532,9 @@ def page_acteur(id_acteur):
         info_acteur['sexe'] = Tuple[3]
         info_acteur['biographie'] = Tuple[4]
 
+    if not bool(info_acteur):
+        abort(404)
+
     #Requête titres des films ou l'acteur a participé.
     req2 = "SELECT f.id_film, f.titre_film FROM film f JOIN jouer j ON f.id_film = j.id_film WHERE j.id_acteur=" + id_acteur + ";"
     cur.execute(req2)
@@ -558,6 +566,9 @@ def page_realisateur(id_realisateur):
         info_realisateur['pays_origine'] = Tuple[2]
         info_realisateur['sexe'] = Tuple[3]
         info_realisateur['biographie'] = Tuple[4]
+
+    if not bool(info_realisateur):
+        abort(404)
 
     #Requête titres des films ou l'realisateur a participé.
     req2 = "SELECT f.id_film, f.titre_film FROM film f JOIN creer j ON f.id_film = j.id_film WHERE j.id_realisateur=" + id_realisateur + ";"
