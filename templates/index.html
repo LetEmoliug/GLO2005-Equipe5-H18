@@ -33,6 +33,17 @@
 	 </div>
 	 {% endfor %}
     </div>
+    <div class="favoritefilms">
+      <h2>Films les plus appréciés</h2>
+      {% for f in favoris %}
+      <div class="film-card">
+	<p class="titre-film"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
+	<p class="moyenne">{{f.moyenne}}</p>
+	<p class="critiques">{{f.nb_favoris}} favoris</p>
+	<p class="synopsis">{{f.synopsis}}</p>
+      </div>
+      {% endfor %}
+    </div>
     <div class="debatedfilms">
       <h2>Films les plus critiqués</h2>
       {% for f in critiques %}
@@ -43,5 +54,6 @@
 	<p class="synopsis">{{f.synopsis}}</p>
       </div>
       {% endfor %}
+    </div>
   </body>
 </html>

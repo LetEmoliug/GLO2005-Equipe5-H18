@@ -43,7 +43,20 @@ def main():
         films_critiques[i]['synopsis'] = Tuple[4]
         i += 1
 
-    return render_template('index.html', films=films_bien_notes, critiques=films_critiques, token=token)
+    req3 = "SELECT film.id_film, COUNT(film.id_film) AS nombre_favoris, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film JOIN favoris ON film.id_film=favoris.id_film GROUP BY film.id_film ORDER BY nombre_favoris DESC LIMIT 5;"
+    cur.execute(req3)
+    films_favoris = []
+    i = 0
+    for Tuple in cur:
+        films_favoris.append({})
+        films_favoris[i]['film_url'] = "/film/" + str(Tuple[0])
+        films_favoris[i]['nb_favoris'] = Tuple[1]
+        films_favoris[i]['titre'] = Tuple[2]
+        films_favoris[i]['moyenne'] = Tuple[3]
+        films_favoris[i]['synopsis'] = Tuple[4]
+        i += 1
+
+    return render_template('index.html', films=films_bien_notes, critiques=films_critiques, favoris=films_favoris, token=token)
 
 @app.route("/film/<film_id>", methods=['GET', 'POST'])
 def film_page(film_id):
