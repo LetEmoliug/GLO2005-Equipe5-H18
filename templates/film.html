@@ -1,12 +1,13 @@
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/film.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/header.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/critique.css') }}">
 </head>
 <body>
   <div id="header">
     <h1>GLO-2005 IMDb</h1>
     <div id="categories">
-      <h2><a href="/">Acceuil</a> <a href="/Films">Films</a> <a href="/">Acteurs</a></h2>
+      <h2><a href="/">Acceuil</a> <a href="/Films">Films</a></h2>
     </div>
     <form id="recherche" action="/ResultatRecherche" method="post">
       <span>Recherche:</span><input type="text" name="recherche">
@@ -120,10 +121,11 @@
     {% endif %}
     <p>Critiques :</p>
     {% for c in critiques %}
-    <div class="critique_user">
-      {% if token and token == c.nom_usager %}
+    {% if token and token == c.nom_usager %}
+    <div class="critique_user critique">
       <h3> {{c.titre_critique}}</h3>
-      <p>Ceci est votre critique</p>
+      <p class="info"> Note attribuée : {{c.note}}</p></br>
+      <p><i>Ceci est votre critique</i></p>
       <form style="display: inline-block">
         <input type="submit" name="update_button" value="Éditer">
       </form>
@@ -132,16 +134,16 @@
       </form></br>
       <p class="info"> Nombre de personnes qui aiment votre critique : {{c.nombre_aimes}}</p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
-      <p class="info"> Note attribuée : {{c.note}}</p></br>
       <p id="texte_critique_user" class="info">{{c.texte}}</p>
-      {% endif %}
     </div>
+    {% endif %}
     {% endfor %}
     {% for c in critiques %}
-    <div class="autres_critique">
+    <div class="autres_critique critique">
       {% if token != c.nom_usager %}
       <h3> {{c.titre_critique}}</h3>
-      <p class="info"> Par : <a href="{{c.nom_usager_url}}">{{c.nom_usager}}</a></p></br>
+      <p class="info padded"> Par : <a href="{{c.nom_usager_url}}">{{c.nom_usager}}</a></p>
+      <p class="info"> Note attribuée : {{c.note}}</p></br>
       {% if token %}
       {% if token not in c.user_qui_ont_aime %}
       <form method="post" id="formLike"></form>
@@ -153,7 +155,6 @@
       {% endif %}
       <p class="info"> Nombre de personnes qui aiment cette critique : {{c.nombre_aimes}}</p></br>
       <p class="info">{{c.date_ecriture}}</p></br>
-      <p class="info"> Note attribuée : {{c.note}}</p></br>
       <p id="texte_critique" class="info">{{c.texte}}</p>
       {% endif %}
     </div>

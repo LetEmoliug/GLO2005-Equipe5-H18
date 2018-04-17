@@ -9,7 +9,7 @@
   <div id="header">
     <h1>GLO-2005 IMDb</h1>
     <div id="categories">
-      <h2><a href="/">Acceuil</a> <a href="/Films">Films</a> <a href="/">Acteurs</a></h2>
+      <h2><a href="/">Acceuil</a> <a href="/Films">Films</a></h2>
     </div>
     <form id="recherche" action="/ResultatRecherche" method="post">
       <span>Recherche:</span><input type="text" name="recherche">
@@ -27,10 +27,10 @@
   </div>
   <div id="acteur-info">
     <h1 id="nom_acteur">{{acteur.nom}}</h1></br>
-    <p id="date_naissance" class="info">Date de naissance : {{acteur.date}}</p></br>
-    <p id="pays_origine" class="info">Pays d'origine : {{acteur.pays_origine}}</p></br>
-    <p id="sexe" class="info">Sexe : {{acteur.sexe}}</p></br>
-    <p id="biographie" class="info">Biographie : {{acteur.biographie}}</p></br>
+    <p id="date_naissance" class="infos">Date de naissance : {{acteur.date}}</p></br>
+    <p id="pays_origine" class="infos">Pays d'origine : {{acteur.pays_origine}}</p></br>
+    <p id="sexe" class="infos">Sexe : {{acteur.sexe}}</p></br>
+    <p id="biographie" class="infos">Biographie : {{acteur.biographie}}</p></br>
   </div>
   <div id="liste">
     <p>Liste de films:</p>

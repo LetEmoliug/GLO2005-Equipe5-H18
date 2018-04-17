@@ -7,7 +7,7 @@
 #categories
 {
     display: inline-block;
-    padding-right: 12%;
+    padding-right: 37%;
 }
 
 #recherche
@@ -22,7 +22,7 @@
     text-align: right;
 }
 
-.titre, .suit, .suivit, .favoris
+.titre, .suit, .suivit, .favoris, .infos
 {
     display: inline-block;
     margin: 0 0 0.5em 0;

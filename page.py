@@ -11,22 +11,39 @@ VarGlobal = {}
 def getUserToken():
     return request.cookies.get('token')
 
+def getkey(critique):
+    return critique['nombre_aimes']
+
 @app.route("/")
 def main():
     token = getUserToken()
     requete = "SELECT id_film, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film WHERE note_moyenne > 7.5 ORDER BY RAND() LIMIT 5;"
     cur = conn.cursor()
     cur.execute(requete)
-    films = []
+    films_bien_notes = []
     i = 0
     for Tuple in cur:
-        films.append({})
-        films[i]['film_url'] = "/film/" + str(Tuple[0])
-        films[i]['titre'] = Tuple[1]
-        films[i]['moyenne'] = Tuple[2]
-        films[i]['synopsis'] = Tuple[3]
+        films_bien_notes.append({})
+        films_bien_notes[i]['film_url'] = "/film/" + str(Tuple[0])
+        films_bien_notes[i]['titre'] = Tuple[1]
+        films_bien_notes[i]['moyenne'] = Tuple[2]
+        films_bien_notes[i]['synopsis'] = Tuple[3]
         i += 1
-    return render_template('index.html', films=films, token=token)
+
+    req2 = "SELECT film.id_film, COUNT(film.id_film) AS nombre_critiques, titre_film, note_moyenne, CONCAT(LEFT(synopsis, 330), '...') FROM film JOIN critique ON film.id_film=critique.id_film GROUP BY film.id_film ORDER BY nombre_critiques DESC LIMIT 5;"
+    cur.execute(req2)
+    films_critiques = []
+    i = 0
+    for Tuple in cur:
+        films_critiques.append({})
+        films_critiques[i]['film_url'] = "/film/" + str(Tuple[0])
+        films_critiques[i]['nb_critiques'] = Tuple[1]
+        films_critiques[i]['titre'] = Tuple[2]
+        films_critiques[i]['moyenne'] = Tuple[3]
+        films_critiques[i]['synopsis'] = Tuple[4]
+        i += 1
+
+    return render_template('index.html', films=films_bien_notes, critiques=films_critiques, token=token)
 
 @app.route("/film/<film_id>", methods=['GET', 'POST'])
 def film_page(film_id):
@@ -164,6 +181,8 @@ def film_page(film_id):
         cur2.close()
 
         i += 1
+
+    critiques.sort(reverse=True, key=getkey)
 
     liste_favoris = []
 

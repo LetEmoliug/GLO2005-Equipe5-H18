@@ -2,40 +2,13 @@
   <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/header.css') }}">
-  <style>
-
-      .filterSection li {
-      list-style: none;
-      margin: 0px;
-      padding: 5px;
-      display: inline;
-      }
-
-
-
-      .showItem {
-      display: list-item;
-      }
-
-      .hideItem {
-      display: none;
-      }
-
-      #itemsToFilter li {
-      list-style: none;
-      background-position: 0 3px;
-      background-repeat: no-repeat;
-      margin: 15 px;
-      padding-left: 40px;
-      font-size: 15pt;
-      }
-  </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/filmlist.css') }}">
   </head>
   <body>
     <div id="header">
       <h1>GLO-2005 IMDb</h1>
       <div id="categories">
-	<h2><a href="/">Acceuil</a> <a href="/Films">Films</a> <a href="/">Acteurs</a></h2>
+	<h2><a href="/">Acceuil</a> <a href="/Films">Films</a></h2>
       </div>
       <form id="recherche" action="/ResultatRecherche" method="post">
 	<span>Recherche:</span><input type="text" name="recherche">

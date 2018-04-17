@@ -7,7 +7,7 @@
     <div id="header">
       <h1>GLO-2005 IMDb</h1>
       <div id="categories">
-	<h2><a href="/">Acceuil</a> <a href="/Films">Films</a> <a href="/">Acteurs</a></h2>
+	<h2><a href="/">Acceuil</a> <a href="/Films">Films</a></h2>
       </div>
       <form id="recherche" action="/ResultatRecherche" method="post">
         <span>Recherche:</span><input type="text" name="recherche">
@@ -24,13 +24,24 @@
       {% endif %}
     </div>
     <div class="topfilms">
+      <h2>Films bien notés</h2>
       {% for f in films %}
 	 <div class="film-card">
 	   <p class="titre-film"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
 	   <p class="moyenne">{{f.moyenne}}</p>
 	   <p class="synopsis">{{f.synopsis}}</p>
 	 </div>
-      {% endfor %}
+	 {% endfor %}
     </div>
+    <div class="debatedfilms">
+      <h2>Films les plus critiqués</h2>
+      {% for f in critiques %}
+      <div class="film-card">
+	<p class="titre-film"><a class="film-link" href="{{f.film_url}}">{{f.titre}}</a></p>
+	<p class="moyenne">{{f.moyenne}}</p>
+	<p class="critiques">{{f.nb_critiques}} critiques</p>
+	<p class="synopsis">{{f.synopsis}}</p>
+      </div>
+      {% endfor %}
   </body>
 </html>
