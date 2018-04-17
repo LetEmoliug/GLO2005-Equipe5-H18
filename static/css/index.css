@@ -34,3 +34,37 @@
 {
     color: inherit;
 }
+
+
+.filterSection li {
+list-style: none;
+margin: 0px;
+padding: 5px;
+display: inline;
+}
+
+
+.showItem {
+display: list-item;
+}
+
+.hideItem {
+display: none;
+}
+
+.dropdown {
+position: relative;
+display: inline-block;
+}
+
+.dropdown-content {
+display: none;
+position: absolute;
+z-index: 1;
+}
+
+.dropdown-content a {
+display: block;
+}
+
+.show {display:block;}

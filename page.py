@@ -433,7 +433,7 @@ def ResultatsRecherche():
 @app.route("/Films", methods=['GET', 'POST'])
 def Films():
     token = getUserToken()
-    requete = "SELECT id_film, titre_film, note_moyenne, genre FROM film;"
+    requete = "SELECT id_film, titre_film, note_moyenne, genre, date_parution, duree FROM film;"
     cur = conn.cursor()
     cur.execute(requete)
 
@@ -445,6 +445,8 @@ def Films():
         films[i]['titre'] = Tuple[1]
         films[i]['moyenne'] = Tuple[2]
         films[i]['genre'] = Tuple[3]
+        films[i]['date'] = Tuple[4]
+        films[i]['duree'] = Tuple[5]
         i += 1
 
     requete_genre = "SELECT DISTINCT genre FROM film;"
@@ -459,7 +461,7 @@ def Films():
         i += 1
 
     #return render_template('ResultatRecherche.html', films=films)
-    return render_template('films.html', films=films, token=token, genre=list_genre)
+    return render_template('films2.html', films=films, token=token, genre=list_genre)
 
 @app.route("/signup")
 def signup():
