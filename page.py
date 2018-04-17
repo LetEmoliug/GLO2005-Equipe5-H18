@@ -124,7 +124,7 @@ def film_page(film_id):
         cur.execute(plus_aimer_crit)
         conn.commit()
 
-    r1 = "SELECT titre_film, DATE_FORMAT(date_parution, '%D %M %Y'), duree, note_moyenne, genre, synopsis FROM film WHERE id_film=" + film_id + ";"
+    r1 = "SELECT titre_film, DATE_FORMAT(date_parution, '%D %M %Y'), TIME_FORMAT(duree, '%Hh%i'), note_moyenne, genre, synopsis FROM film WHERE id_film=" + film_id + ";"
     cur.execute(r1)
     film_info = {}
     for Tuple in cur:
